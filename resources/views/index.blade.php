@@ -33,5 +33,10 @@
     {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> --}}
     <script src="https://getbootstrap.com/docs/5.2/examples/dashboard/dashboard.js"></script>
 </body>
+<script type="module">
+    $(document).ready(function() {
+        alert('123')
+    });
+</script>
 
 </html>

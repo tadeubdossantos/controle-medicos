@@ -25,7 +25,9 @@ Route::prefix('especialidades')->group(function () {
 });
 
 Route::prefix('medicos')->group(function () {
-
+    Route::get('/', function() {
+        return view('pages.medicos');
+    })->name('medicos.cadastrar');
 });
 
 Route::prefix('medicos_especialidades')->group(function () {

@@ -14,7 +14,20 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // return view('welcome');
-    return view('index');
+    return view('pages.home');
+});
+
+
+Route::prefix('especialidades')->group(function () {
+    Route::get('/', function() {
+        return view('pages.especialidades');
+    })->name('especialidades.cadastrar');
+});
+
+Route::prefix('medicos')->group(function () {
+
+});
+
+Route::prefix('medicos_especialidades')->group(function () {
 
 });

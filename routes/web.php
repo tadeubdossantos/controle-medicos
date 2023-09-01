@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EspecialidadeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,17 +20,16 @@ Route::get('/', function () {
 
 
 Route::prefix('especialidades')->group(function () {
-    Route::get('/', function() {
-        return view('pages.especialidades');
-    })->name('especialidades.cadastrar');
+    Route::get('/', [EspecialidadeController::class, 'index'])->name('especialidades.list');
+    Route::post('/create', [EspecialidadeController::class, 'create'])->name('especialidades.create');
 });
 
-Route::prefix('medicos')->group(function () {
-    Route::get('/', function() {
-        return view('pages.medicos');
-    })->name('medicos.cadastrar');
-});
+// Route::prefix('medicos')->group(function () {
+//     Route::get('/', function() {
+//         return view('pages.medicos');
+//     })->name('medicos.cadastrar');
+// });
 
-Route::prefix('medicos_especialidades')->group(function () {
+// Route::prefix('medicos_especialidades')->group(function () {
 
-});
+// });

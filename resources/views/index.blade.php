@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- styles --}}
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -37,7 +38,11 @@
 </body>
 <script type="module">
     $(document).ready(function() {
-        console.log('123');
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        })
     });
 
     $('#frm-especialidades').submit(function(e) {
@@ -45,7 +50,7 @@
         var formData = new FormData(this);
         $.ajax({
             type:"POST",
-            url: "{{ route('especialidades.create') }}",
+            url: "{{ url('especialidades/create') }}",
             data: formData,
             cache:false,
             contentType: false,
@@ -57,7 +62,6 @@
                 console.log(data);
             }
         });
-
     });
 </script>
 

@@ -8,7 +8,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route("especialidades.cadastrar") }}">
+                <a class="nav-link" href="{{ route("especialidades.list") }}">
                     <span data-feather="file" class="align-text-bottom"></span>
                     Especialidades
                 </a>

@@ -10,8 +10,12 @@ use Datatables;
 class EspecialidadeController extends Controller
 {
     public function index() {
+
         if(request()->ajax()) {
             return datatables()->of(Especialidade::select('*'))
+                ->addColumn('data_formatada', function ($data) {
+                    return $data->created_at->format('d/m/Y H:i');
+                })
                 ->addColumn('action', 'components/especialidades-acoes')
                 ->rawColumns(['action'])
                 ->addIndexColumn()

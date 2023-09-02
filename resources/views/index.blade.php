@@ -57,8 +57,8 @@
                     name: 'descricao'
                 },
                 {
-                    data: 'created_at',
-                    name: 'created_at'
+                    data: 'data_formatada',
+                    name: 'data_formatada'
                 },
                 {
                     data: 'action',
@@ -110,8 +110,7 @@
                 }
 
                 alert('Cadastrado Realizado com sucesso!');
-                $('#frm-especialidades input').val('');
-                $('#frm-especialidades textarea').val('');
+                resetForm();
                 $('.btn-close').click();
             },
             error: function() {
@@ -128,6 +127,7 @@
     se não haver o  --}}
 <script>
     function consultar(id) {
+        resetForm();
         $.ajax({
             type: "POST",
             url: "{{ url('especialidades/consultar') }}",
@@ -140,7 +140,7 @@
                 $('#modal-label-especialidade').html("Alterar Especialidade");
                 $('#id').val(data.id);
                 $('#nome').val(data.nome);
-                $('#descricao').html(data.descricao);
+                $('#descricao').val(data.descricao);
             }
         });
     }
@@ -161,7 +161,12 @@
         });
     }
 
-
+    function resetForm() {
+        $('.card ').hide();
+        $('.card-body ').html('');
+        $('#frm-especialidades input').val('');
+        $('#frm-especialidades textarea').val('');
+    }
 </script>
 
 </html>

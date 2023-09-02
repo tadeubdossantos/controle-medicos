@@ -59,4 +59,8 @@ class EspecialidadeController extends Controller
         $row->delete();
         return response()->json(['success' => true]);
     }
+
+    public function countRows() {
+        return Especialidade::count();
+    }
 }

@@ -15,8 +15,11 @@ use App\Http\Controllers\EspecialidadeController;
 */
 
 Route::get('/', function () {
-    return view('pages.home');
+    $especialidade = new EspecialidadeController();
+    $qtdEspecialidades = $especialidade->countRows();
+    return view('pages.home', compact('qtdEspecialidades'));
 });
+
 
 Route::prefix('especialidades')->group(function () {
     Route::get('/', [EspecialidadeController::class, 'index'])->name('especialidades.list');
@@ -25,6 +28,7 @@ Route::prefix('especialidades')->group(function () {
     Route::post('/consultar', [EspecialidadeController::class, 'read']);
     Route::post('/alterar', [EspecialidadeController::class, 'alterar']);
     Route::post('/excluir', [EspecialidadeController::class, 'delete']);
+
 });
 
 // Route::prefix('medicos')->group(function () {

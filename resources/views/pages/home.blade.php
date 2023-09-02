@@ -8,9 +8,8 @@
         <div class="col-sm-6 mb-3 mb-sm-0">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Especilidades</h5>
-                    <p class="card-text">Total de especialidades cadastradas</p>
-                    <a href="#" class="btn btn-primary"> </a>
+                    <h5 class="card-title">Especialidades</h5>
+                    <p class="card-text">Total: {{ $qtdEspecialidades }}</p>
                 </div>
             </div>
         </div>
@@ -18,8 +17,8 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Médicos</h5>
-                    <p class="card-text">Total de médicos cadastrados</p>
-                    <a href="#" class="btn btn-primary"> </a>
+                    <p class="card-text">Total de médicos cadastrados: </p>
+
                 </div>
             </div>
         </div>

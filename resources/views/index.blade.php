@@ -102,18 +102,20 @@
             processData: false,
             success: function(data) {
                 if(data.errors) {
+                    $('.card').hide();
+                    $('.card-body').html('');
                     if(data.errors.nome[0])
                         $('.card-body').append(data.errors.nome[0]);
                     return $('.card').show();
                 }
 
                 alert('Cadastrado Realizado com sucesso!');
-                $('#frm-especialidades input').html('');
-                $('#frm-especialidades textarea').html('');
+                $('#frm-especialidades input').val('');
+                $('#frm-especialidades textarea').val('');
                 $('.btn-close').click();
             },
-            error: function(data) {
-                console.log(data);
+            error: function() {
+                alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
             }
         })
         .always(function(data) {
@@ -158,6 +160,8 @@
             }
         });
     }
+
+
 </script>
 
 </html>

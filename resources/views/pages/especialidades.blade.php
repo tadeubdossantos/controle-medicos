@@ -9,7 +9,7 @@
 
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-especialidade"
-        onclick=" $('#modal-label-especialidade').html('Incluir Especialidade');">
+        onclick=" $('#modal-label-especialidade').html('Incluir Especialidade');resetForm();">
         Novo
     </button>
     <br><br>
@@ -67,5 +67,146 @@
             </thead>
         </table>
     </div>
+
+@endsection
+
+@section('scripts')
+
+    <script type="module">
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#table-especialidades').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ url('especialidades/lista') }}",
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'nome',
+                        name: 'nome'
+                    },
+                    {
+                        data: 'descricao',
+                        name: 'descricao'
+                    },
+                    {
+                        data: 'data_formatada',
+                        name: 'data_formatada'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false
+                    },
+
+                ],
+                order: [
+                    [0, 'desc']
+                ],
+                oLanguage: {
+                    "sLengthMenu": "Mostrar _MENU_ registros por página",
+                    "sZeroRecords": "Nenhum registro encontrado",
+                    "sInfo": "Mostrando _START_ / _END_ de _TOTAL_ registro(s)",
+                    "sInfoEmpty": "Mostrando 0 / 0 de 0 registros",
+                    "sInfoFiltered": "(filtrado de _MAX_ registros)",
+                    "sSearch": "Pesquisar: ",
+                    "oPaginate": {
+                        "sFirst": "Início",
+                        "sPrevious": "Anterior",
+                        "sNext": "Próximo",
+                        "sLast": "Último"
+                    }
+                },
+            });
+        });
+
+        $('#frm-especialidades').submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            var rota = $('input[name=id]').val() === '' ?
+                "{{ url('especialidades/cadastrar') }}" :
+                "{{ url('especialidades/alterar') }}";
+            $.ajax({
+                type: "POST",
+                url: rota,
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    if(data.errors) {
+                        $('.card').hide();
+                        $('.card-body').html('');
+                        if(data.errors.nome[0])
+                            $('.card-body').append(data.errors.nome[0]);
+                        return $('.card').show();
+                    }
+
+                    alert('Cadastrado Realizado com sucesso!');
+                    resetForm();
+                    $('.btn-close').click();
+                },
+                error: function() {
+                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                }
+            })
+            .always(function(data) {
+                var oTable = $("#table-especialidades").dataTable();
+                oTable.fnDraw(false);
+            });
+        });
+    </script>
+
+    {{-- Funções chamadas de forma inline só funcionam neste bloco que não possui o atributo 'type' --}}
+    <script>
+        function consultar(id) {
+            resetForm();
+            $.ajax({
+                type: "POST",
+                url: "{{ url('especialidades/consultar') }}",
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data);
+                    $('#modal-label-especialidade').html("Alterar Especialidade");
+                    $('#id').val(data.id);
+                    $('#nome').val(data.nome);
+                    $('#descricao').val(data.descricao);
+                }
+            });
+        }
+
+        function excluir(id) {
+            if (!confirm("Deseja realmente excluir?")) return;
+            $.ajax({
+                type: "POST",
+                url: "{{ url('especialidades/excluir') }}",
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(data) {
+                    var oTable = $('#table-especialidades').dataTable();
+                    oTable.fnDraw(false);
+                }
+            });
+        }
+
+        function resetForm() {
+            $('.card').hide();
+            $('.card-body ').html('');
+            $('#frm-especialidades input').val('');
+            $('#frm-especialidades textarea').val('');
+        }
+    </script>
 
 @endsection

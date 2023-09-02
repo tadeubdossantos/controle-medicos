@@ -85,6 +85,16 @@ body {
     box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
   }
 
-    .dt-buttons {
-        display: none;
-    }
+  .dt-buttons {
+    display: none;
+  }
+
+  .card {
+    margin-bottom: 20px;;
+  }
+
+  .modal .card {
+    display:none;
+  }
+
+

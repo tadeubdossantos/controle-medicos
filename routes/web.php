@@ -18,7 +18,6 @@ Route::get('/', function () {
     return view('pages.home');
 });
 
-
 Route::prefix('especialidades')->group(function () {
     Route::get('/', [EspecialidadeController::class, 'index'])->name('especialidades.list');
     Route::get('/lista', [EspecialidadeController::class, 'index']);
@@ -26,7 +25,6 @@ Route::prefix('especialidades')->group(function () {
     Route::post('/consultar', [EspecialidadeController::class, 'read']);
     Route::post('/alterar', [EspecialidadeController::class, 'alterar']);
     Route::post('/excluir', [EspecialidadeController::class, 'delete']);
-
 });
 
 // Route::prefix('medicos')->group(function () {

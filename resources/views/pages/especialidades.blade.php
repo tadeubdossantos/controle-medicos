@@ -24,6 +24,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body"></div>
+                    </div>
                     <form action="" method="post" enctype="multipart/form-data" id="frm-especialidades">
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">

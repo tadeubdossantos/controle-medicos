@@ -30,15 +30,9 @@
             </main>
         </div>
     </div>
-    {{-- scripts --}}
-    {{-- <script src="https://getbootstrap.com/docs/5.2/dist/js/bootstrap.bundle.min.js"></script> --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script> --}}
-    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> --}}
-    {{-- <script src="https://getbootstrap.com/docs/5.2/examples/dashboard/dashboard.js"></script> --}}
 </body>
 
 <script type="module">
-    //   $('#modal-especialidade').modal('show');
     $(document).ready(function() {
         $.ajaxSetup({
             headers: {
@@ -107,28 +101,37 @@
             contentType: false,
             processData: false,
             success: function(data) {
-                console.log(data);
-                $("#exampleModal").modal('hide');
-                var oTable = $("#table-especialidades").dataTable();
-                oTable.fnDraw(false);
+                if(data.errors) {
+                    if(data.errors.nome[0])
+                        $('.card-body').append(data.errors.nome[0]);
+                    return $('.card').show();
+                }
 
+                alert('Cadastrado Realizado com sucesso!');
+                $('#frm-especialidades input').html('');
+                $('#frm-especialidades textarea').html('');
+                $('.btn-close').click();
             },
             error: function(data) {
                 console.log(data);
             }
+        })
+        .always(function(data) {
+            var oTable = $("#table-especialidades").dataTable();
+            oTable.fnDraw(false);
         });
     });
 </script>
 {{-- Funções aplicados de forma inline
-    se não haver o
-
-    --}}
+    se não haver o  --}}
 <script>
     function consultar(id) {
         $.ajax({
             type: "POST",
             url: "{{ url('especialidades/consultar') }}",
-            data: { id: id },
+            data: {
+                id: id
+            },
             dataType: 'json',
             success: function(data) {
                 console.log(data);
@@ -145,7 +148,9 @@
         $.ajax({
             type: "POST",
             url: "{{ url('especialidades/excluir') }}",
-            data: { id: id },
+            data: {
+                id: id
+            },
             dataType: 'json',
             success: function(data) {
                 var oTable = $('#table-especialidades').dataTable();
@@ -153,7 +158,6 @@
             }
         });
     }
-
 </script>
 
 </html>

@@ -27,9 +27,14 @@ class EspecialidadeController extends Controller
        return $result;
     }
 
-        public function read(Request $request)
-        {
-            $result = Especialidade::where('id', '=', $request->id)->first();
-            return Response()->json($result);
-        }
+    public function read(Request $request) {
+        $result = Especialidade::where('id', '=', $request->id)->first();
+        return Response()->json($result);
+    }
+
+    public function delete(Request $request) {
+        $row = Especialidade::find($request->id);
+        $row->delete();
+        return response()->json(['success' => true]);
+    }
 }

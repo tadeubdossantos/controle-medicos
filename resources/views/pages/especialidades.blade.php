@@ -8,13 +8,15 @@
     </div>
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-especialidade" onclick="novo();">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-especialidade"
+        onclick=" $('#modal-label-especialidade').html('Incluir Especialidade');">
         Novo
     </button>
     <br><br>
 
     <!-- Modal -->
-    <div class="modal fade" id="modal-especialidade" tabindex="-1" aria-labelledby="modal-label-especialidade" aria-hidden="true">
+    <div class="modal fade" id="modal-especialidade" tabindex="-1" aria-labelledby="modal-label-especialidade"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

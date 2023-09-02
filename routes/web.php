@@ -22,8 +22,9 @@ Route::get('/', function () {
 Route::prefix('especialidades')->group(function () {
     Route::get('/', [EspecialidadeController::class, 'index'])->name('especialidades.list');
     Route::get('/lista', [EspecialidadeController::class, 'index']);
-    Route::post('/create', [EspecialidadeController::class, 'create'])->name('especialidades.create');
-    Route::post('/read', [EspecialidadeController::class, 'read']);
+    Route::post('/cadastrar', [EspecialidadeController::class, 'create'])->name('especialidades.create');
+    Route::post('/consultar', [EspecialidadeController::class, 'read']);
+    Route::post('/excluir', [EspecialidadeController::class, 'delete']);
 
 });
 

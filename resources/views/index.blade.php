@@ -84,7 +84,7 @@
         var formData = new FormData(this);
         $.ajax({
             type: "POST",
-            url: "{{ url('especialidades/create') }}",
+            url: "{{ url('especialidades/cadastrar') }}",
             data: formData,
             cache: false,
             contentType: false,
@@ -92,7 +92,7 @@
             success: function(data) {
                 console.log(data);
                 $("#exampleModal").modal('hide');
-                var oTable = $("#exampleModal").dataTable();
+                var oTable = $("#table-especialidades").dataTable();
                 oTable.fnDraw(false);
 
             },
@@ -107,17 +107,11 @@
 
     --}}
 <script>
-    function novo() {
-        $('#modal-label-especialidade').html("Incluir Especialidade");
-    }
-
-    function editFunc(id) {
+    function consultar(id) {
         $.ajax({
             type: "POST",
-            url: "{{ url('especialidades/read') }}",
-            data: {
-                id: id
-            },
+            url: "{{ url('especialidades/consultar') }}",
+            data: { id: id },
             dataType: 'json',
             success: function(data) {
                 console.log(data);
@@ -125,6 +119,20 @@
                 $('#id').val(data.id);
                 $('#nome').val(data.nome);
                 $('#descricao').html(data.descricao);
+            }
+        });
+    }
+
+    function excluir(id) {
+        if (!confirm("Deseja realmente excluir?")) return;
+        $.ajax({
+            type: "POST",
+            url: "{{ url('especialidades/excluir') }}",
+            data: { id: id },
+            dataType: 'json',
+            success: function(data) {
+                var oTable = $('#table-especialidades').dataTable();
+                oTable.fnDraw(false);
             }
         });
     }

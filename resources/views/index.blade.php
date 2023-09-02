@@ -38,8 +38,8 @@
 </body>
 
 <script type="module">
+    //   $('#modal-especialidade').modal('show');
     $(document).ready(function() {
-        $('#modal-especialidade').modal('show');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -107,22 +107,28 @@
 
     --}}
 <script>
+    function novo() {
+        $('#modal-label-especialidade').html("Incluir Especialidade");
+    }
+
     function editFunc(id) {
-       $.ajax({
-           type: "POST",
-           url: "{{ url('especialidades/read') }}",
-           data: { id: id },
-           dataType: 'json',
-           success: function(data) {
+        $.ajax({
+            type: "POST",
+            url: "{{ url('especialidades/read') }}",
+            data: {
+                id: id
+            },
+            dataType: 'json',
+            success: function(data) {
                 console.log(data);
-               $('#modal-especialidade').html("Edit Employee");
-               $('#modal-especialidade').modal('show');
-            //    $('#id').val(res.id);
-               $('#nome').val(data.nome);
-               $('#descricao').html(data.descricao);
-           }
-       });
-   }
+                $('#modal-label-especialidade').html("Alterar Especialidade");
+                $('#id').val(data.id);
+                $('#nome').val(data.nome);
+                $('#descricao').html(data.descricao);
+            }
+        });
+    }
+
 </script>
 
 </html>

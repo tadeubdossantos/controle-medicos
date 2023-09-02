@@ -8,13 +8,14 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->path() == 'especialidades' ? 'active' : '' }}" href="{{ route("especialidades.list") }}">
+                <a class="nav-link {{ request()->path() == 'especialidades' ? 'active' : '' }}"
+                    href="{{ route('especialidades.list') }}">
                     <span data-feather="file" class="align-text-bottom"></span>
                     Especialidades
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->path() == 'medicos' ? 'active' : '' }}" href="#">
+                <a class="nav-link {{ request()->path() == 'medicos' ? 'active' : '' }}" href="{{ route('medicos.list') }}">
                     <span data-feather="shopping-cart" class="align-text-bottom"></span>
                     Médicos
                 </a>

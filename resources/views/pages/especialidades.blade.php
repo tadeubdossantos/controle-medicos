@@ -144,12 +144,14 @@
                     if(data.errors) {
                         $('.card').hide();
                         $('.card-body').html('');
-                        if(data.errors.nome[0])
-                            $('.card-body').append(data.errors.nome[0]);
+                        Object.keys(data.errors).forEach(key => {
+                            $('.card-body').append(`<p>${data.errors[key][0]}</p>`);
+                        });
                         return $('.card').show();
                     }
 
-                    alert('Cadastrado Realizado com sucesso!');
+                    if(!$('#id').val()) alert('Cadastro Realizado com sucesso!');
+                    else alert('Atualização Realizada com sucesso!');
                     resetForm();
                     $('.btn-close').click();
                 },

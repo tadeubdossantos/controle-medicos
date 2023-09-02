@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EspecialidadeController;
+use App\Http\Controllers\MedicoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,12 +32,12 @@ Route::prefix('especialidades')->group(function () {
 
 });
 
-// Route::prefix('medicos')->group(function () {
-//     Route::get('/', function() {
-//         return view('pages.medicos');
-//     })->name('medicos.cadastrar');
-// });
+Route::prefix('medicos')->group(function () {
+    Route::get('/', [MedicoController::class, 'index'])->name('medicos.list');
+    Route::get('/lista', [MedicoController::class, 'index']);
+    Route::post('/cadastrar', [MedicoController::class, 'create'])->name('medicos.create');
+    Route::post('/consultar', [MedicoController::class, 'read']);
+    Route::post('/alterar', [MedicoController::class, 'alterar']);
+    Route::post('/excluir', [MedicoController::class, 'delete']);
+});
 
-// Route::prefix('medicos_especialidades')->group(function () {
-
-// });

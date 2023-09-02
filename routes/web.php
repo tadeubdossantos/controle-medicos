@@ -24,6 +24,7 @@ Route::prefix('especialidades')->group(function () {
     Route::get('/lista', [EspecialidadeController::class, 'index']);
     Route::post('/cadastrar', [EspecialidadeController::class, 'create'])->name('especialidades.create');
     Route::post('/consultar', [EspecialidadeController::class, 'read']);
+    Route::post('/alterar', [EspecialidadeController::class, 'alterar']);
     Route::post('/excluir', [EspecialidadeController::class, 'delete']);
 
 });

@@ -32,6 +32,17 @@ class EspecialidadeController extends Controller
         return Response()->json($result);
     }
 
+    public function alterar(Request $request) {
+        $row = Especialidade::find($request->id);
+        $result = $row->update([
+            'nome' => $request->nome,
+            'descricao' => $request->descricao
+        ]);
+        if(!$result)
+            return response()->json(['success' => false]);
+        return response()->json(['success' => true]);
+    }
+
     public function delete(Request $request) {
         $row = Especialidade::find($request->id);
         $row->delete();

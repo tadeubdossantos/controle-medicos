@@ -82,9 +82,12 @@
     $('#frm-especialidades').submit(function(e) {
         e.preventDefault();
         var formData = new FormData(this);
+        var rota = $('input[name=id]').val() === '' ?
+            "{{ url('especialidades/cadastrar') }}"
+            : "{{ url('especialidades/alterar') }}" ;
         $.ajax({
             type: "POST",
-            url: "{{ url('especialidades/cadastrar') }}",
+            url: rota,
             data: formData,
             cache: false,
             contentType: false,

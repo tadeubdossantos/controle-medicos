@@ -25,6 +25,7 @@
                 </div>
                 <div class="modal-body">
                     <form action="" method="post" enctype="multipart/form-data" id="frm-especialidades">
+                        <input type="hidden" name="id" id="id">
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome:</label>
                             <input type="text" class="form-control" id="nome" name="nome">

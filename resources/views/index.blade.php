@@ -36,33 +36,93 @@
     {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script> --}}
     {{-- <script src="https://getbootstrap.com/docs/5.2/examples/dashboard/dashboard.js"></script> --}}
 </body>
+
 <script type="module">
     $(document).ready(function() {
+        $('#modal-especialidade').modal('show');
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-        })
+        });
+
+        $('#table-especialidades').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ url('especialidades/lista') }}",
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'nome',
+                    name: 'nome'
+                },
+                {
+                    data: 'descricao',
+                    name: 'descricao'
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false
+                },
+
+            ],
+            order: [
+                [0, 'desc']
+            ]
+        });
     });
 
     $('#frm-especialidades').submit(function(e) {
         e.preventDefault();
         var formData = new FormData(this);
         $.ajax({
-            type:"POST",
+            type: "POST",
             url: "{{ url('especialidades/create') }}",
             data: formData,
-            cache:false,
+            cache: false,
             contentType: false,
             processData: false,
-            success: (data) => {
-                console.log(data)
+            success: function(data) {
+                console.log(data);
+                $("#exampleModal").modal('hide');
+                var oTable = $("#exampleModal").dataTable();
+                oTable.fnDraw(false);
+
             },
             error: function(data) {
                 console.log(data);
             }
         });
     });
+</script>
+{{-- Funções aplicados de forma inline
+    se não haver o
+
+    --}}
+<script>
+    function editFunc(id) {
+       $.ajax({
+           type: "POST",
+           url: "{{ url('especialidades/read') }}",
+           data: { id: id },
+           dataType: 'json',
+           success: function(data) {
+                console.log(data);
+               $('#modal-especialidade').html("Edit Employee");
+               $('#modal-especialidade').modal('show');
+            //    $('#id').val(res.id);
+               $('#nome').val(data.nome);
+               $('#descricao').html(data.descricao);
+           }
+       });
+   }
 </script>
 
 </html>

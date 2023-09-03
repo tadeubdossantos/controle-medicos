@@ -27,11 +27,11 @@
                     <div class="card bg-danger">
                         <div class="card-body text-light"></div>
                     </div>
-                    <form action="" method="post" enctype="multipart/form-data" id="frm-especialidades">
+                    <form action="" method="post" enctype="multipart/form-data" id="frm-medicos-especialistas">
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">
-                            <label for="floatingSelect">Médico</label>
-                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                            <label for="medico_id">Médico</label>
+                            <select class="form-select" id="medico_id" name="medico_id" aria-label="Floating label select example">
                                 <option>Nenhum</option>
                                 @foreach ($medicos as $medico)
                                     <option value="{{ $medico->id }}">{{ $medico->nome }}</option>
@@ -40,8 +40,8 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="floatingSelect">Especialidade</label>
-                            <select class="form-select" id="floatingSelect" aria-label="Floating label select example">
+                            <label for="especialidade_id">Especialidade</label>
+                            <select class="form-select" id="especialidade_id" name="especialidade_id" aria-label="Floating label select example">
                                 <option>Nenhum</option>
                                 @foreach ($especialidades as $especialidade)
                                     <option value="{{ $especialidade->id }}">{{ $especialidade->nome }}</option>
@@ -64,13 +64,11 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped table-sm" id="table-especialidades">
+        <table class="table table-striped table-sm" id="table-medicos-especialidades">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Data de Cadastro</th>
+                    <th scope="col">Médico</th>
+                    <th scope="col">Especialidade</th>
                     <th scope="col">Ações</th>
                 </tr>
             </thead>
@@ -89,32 +87,24 @@
                 }
             });
 
-            $('#table-especialidades').DataTable({
+            $('#table-medicos-especialidades').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ url('especialidades/lista') }}",
-                columns: [{
-                        data: 'id',
-                        name: 'id'
+                ajax: "{{ url('medicos_especialidades/lista') }}",
+                columns: [
+                    {
+                        data: 'medico_nome',
+                        name: 'medico_nome'
                     },
                     {
-                        data: 'nome',
-                        name: 'nome'
-                    },
-                    {
-                        data: 'descricao',
-                        name: 'descricao'
-                    },
-                    {
-                        data: 'data_formatada',
-                        name: 'data_formatada'
+                        data: 'especialidade_nome',
+                        name: 'especialidade_nome'
                     },
                     {
                         data: 'action',
                         name: 'action',
                         orderable: false
-                    },
-
+                    }
                 ],
                 order: [
                     [0, 'desc']
@@ -136,12 +126,12 @@
             });
         });
 
-        $('#frm-especialidades').submit(function(e) {
+        $('#frm-medicos-especialistas').submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
             var rota = $('input[name=id]').val() === '' ?
-                "{{ url('especialidades/cadastrar') }}" :
-                "{{ url('especialidades/alterar') }}";
+                "{{ url('medicos_especialidades/cadastrar') }}" :
+                "{{ url('medicos_especialidades/alterar') }}";
             $.ajax({
                     type: "POST",
                     url: rota,
@@ -169,7 +159,7 @@
                     }
                 })
                 .always(function(data) {
-                    var oTable = $("#table-especialidades").dataTable();
+                    var oTable = $("#table-medicos-especialidades").dataTable();
                     oTable.fnDraw(false);
                 });
         });
@@ -181,7 +171,7 @@
             resetForm();
             $.ajax({
                 type: "POST",
-                url: "{{ url('especialidades/consultar') }}",
+                url: "{{ url('medicos_especialidades/consultar') }}",
                 data: {
                     id: id
                 },
@@ -200,13 +190,13 @@
             if (!confirm("Deseja realmente excluir?")) return;
             $.ajax({
                 type: "POST",
-                url: "{{ url('especialidades/excluir') }}",
+                url: "{{ url('medicos_especialidades/excluir') }}",
                 data: {
                     id: id
                 },
                 dataType: 'json',
                 success: function(data) {
-                    var oTable = $('#table-especialidades').dataTable();
+                    var oTable = $('#table-medicos-especialidades').dataTable();
                     oTable.fnDraw(false);
                 }
             });
@@ -215,8 +205,8 @@
         function resetForm() {
             $('.card').hide();
             $('.card-body ').html('');
-            $('#frm-especialidades input').val('');
-            $('#frm-especialidades textarea').val('');
+            $('#frm-medicos-especialistas input').val('');
+            $('#frm-medicos-especialistas textarea').val('');
         }
     </script>
 

@@ -28,8 +28,6 @@
                         <div class="card-body text-light"></div>
                     </div>
                     <form action="" method="post" enctype="multipart/form-data" id="frm-medicos-especialistas">
-                        <input type="hidden" name="before_medico_id" value="">
-                        <input type="hidden" name="before_especialidade_id" value="">
                         <div class="mb-3">
                             <label for="medico_id">Médico</label>
                             <select class="form-select" id="medico_id" name="medico_id"
@@ -131,9 +129,7 @@
         $('#frm-medicos-especialistas').submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
-            var rota = $('input[name=id]').val() === '' ?
-                "{{ url('medicos_especialidades/cadastrar') }}" :
-                "{{ url('medicos_especialidades/alterar') }}";
+            var rota = "{{ url('medicos_especialidades/cadastrar') }}";
             $.ajax({
                     type: "POST",
                     url: rota,
@@ -151,18 +147,24 @@
                             return $('.card').show();
                         }
 
-                        if (!$('#id').val()) alert('Cadastro Realizado com sucesso!');
-                        else alert('Atualização Realizada com sucesso!');
+                        alert('Cadastro Realizado com sucesso!');
                         resetForm();
                         $('.btn-close').click();
                     },
                     error: function(error) {
-                        if (error.responseJSON.message && (error.responseJSON.message).indexOf(
-                                'SQLSTATE[23000]') !== -1) {
-                            $('.card').hide();
-                            $('.card-body').html(`<p>Esta especialidade ${$('#especialidade_id').text()} já foi incluída para este médico(a)
-                                ${$('#medico_id').text()}</p>`);
-                            return $('.card').show();
+                        // Ao haver duplicidade
+                        if(error.responseJSON.message) {
+                            if((error.responseJSON.message).indexOf('SQLSTATE[23000]') !== -1) {
+                                $('.card').hide();
+                                $('.card-body').html(`<p>Esta especialidade ${$('#especialidade_id').text()} já foi incluída para este médico(a)
+                                    ${$('#medico_id').text()}</p>`);
+                                return $('.card').show();
+                            } // Está acusando erro, mas está incluído registro.
+                            else if((error.responseJSON.message).indexOf('Model::setAttribute()') !== -1) {
+                                resetForm();
+                                $('.btn-close').click();
+                                return alert('Cadastro Realizado com Sucesso!');
+                            }
                         }
 
                         alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
@@ -177,33 +179,14 @@
 
     {{-- Funções chamadas de forma inline só funcionam neste bloco que não possui o atributo 'type' --}}
     <script>
-        function consultar(medico_id, especialidade_id) {
-            resetForm();
-            $('input[name=before_medico_id]').val(medico_id);
-            $('input[name=before_especialidade_id]').val(especialidade_id);
-            $.ajax({
-                type: "POST",
-                url: "{{ url('medicos_especialidades/consultar') }}",
-                data: {
-                    medico_id: medico_id,
-                    especialidade_id : especialidade_id
-                },
-                dataType: 'json',
-                success: function(data) {
-                    $('#modal-label-especialidade').html("Alterar Medicos por Especialidade");
-                    $('#medico_id').val(data.medico_id);
-                    $('#especialidade_id').val(data.especialidade_id);
-                }
-            });
-        }
-
-        function excluir(id) {
+        function excluir(medico_id, especialidade_id) {
             if (!confirm("Deseja realmente excluir?")) return;
             $.ajax({
                 type: "POST",
                 url: "{{ url('medicos_especialidades/excluir') }}",
                 data: {
-                    id: id
+                    medico_id: medico_id,
+                    especialidade_id: especialidade_id
                 },
                 dataType: 'json',
                 success: function(data) {

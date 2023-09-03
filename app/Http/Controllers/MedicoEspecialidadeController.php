@@ -38,7 +38,10 @@ class MedicoEspecialidadeController extends Controller
 
     public function create(Request $request)
     {
-        $validator = Validator::make($request->all(), ['medico_id' => 'required', 'especialidade_id' => 'required'], ['medico_id.required' => 'Selecione o médico', 'especialidade_id.required' => 'Selecione a especialidade']);
+        $validator = Validator::make($request->all(),
+            ['medico_id' => 'required', 'especialidade_id' => 'required'],
+            ['medico_id.required' => 'Selecione o médico', 'especialidade_id.required' => 'Selecione a especialidade']
+        );
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -55,40 +58,15 @@ class MedicoEspecialidadeController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function read(Request $request)
-    {
-        $result = MedicoEspecialidade::where('medico_id', $request->medico_id)
-            ->where('especialidade_id', $request->especialidade_id)
-            ->first();
-        return Response()->json($result);
-    }
-
-    public function alterar(Request $request)
-    {
-        $validator = Validator::make($request->all(), ['medico_id' => 'required', 'especialidade_id' => 'required'], ['medico_id.required' => 'Selecione o médico', 'especialidade_id.required' => 'Selecione a especialidade']);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
-        }
-
-        $row = MedicoEspecialidade::where('medico_id', $request->before_medico_id)
-            ->where('especialidade_id', $request->before_especialidade_id)
-            ->first();
-        dd($row);
-        $result = $row->update([
-            'medico_id' => $request->medico_id,
-            'especialidade_id' => $request->especialidade_id,
-        ]);
-        if (!$result) {
-            return response()->json(['success' => false]);
-        }
-        return response()->json(['success' => true]);
-    }
-
     public function delete(Request $request)
     {
-        $row = MedicoEspecialidade::find($request->id);
-        $row->delete();
+        $row = MedicoEspecialidade::where('medico_id', $request->medico_id)
+            ->where('especialidade_id', $request->especialidade_id)
+            ->delete();
+
+        if (!$row) {
+            return response()->json(['success' => false]);
+        }
         return response()->json(['success' => true]);
     }
 }

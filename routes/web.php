@@ -49,7 +49,6 @@ Route::prefix('medicos_especialidades')->group(function () {
     Route::get('/lista', [MedicoEspecialidadeController::class, 'index']);
     Route::post('/cadastrar', [MedicoEspecialidadeController::class, 'create'])->name('medicos_especialidades.create');
     Route::post('/consultar', [MedicoEspecialidadeController::class, 'read']);
-    Route::post('/alterar', [MedicoEspecialidadeController::class, 'alterar']);
     Route::post('/excluir', [MedicoEspecialidadeController::class, 'delete']);
 });
 

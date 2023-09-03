@@ -48,12 +48,18 @@ class MedicoEspecialidadeController extends Controller
             'medico_id' => $request->medico_id,
             'especialidade_id' => $request->especialidade_id,
         ]);
-        return $result;
+
+        if (!$result) {
+            return response()->json(['success' => false]);
+        }
+        return response()->json(['success' => true]);
     }
 
     public function read(Request $request)
     {
-        $result = MedicoEspecialidade::where('id', '=', $request->id)->first();
+        $result = MedicoEspecialidade::where('medico_id', $request->medico_id)
+            ->where('especialidade_id', $request->especialidade_id)
+            ->first();
         return Response()->json($result);
     }
 
@@ -65,7 +71,10 @@ class MedicoEspecialidadeController extends Controller
             return response()->json(['errors' => $validator->errors()]);
         }
 
-        $row = MedicoEspecialidade::find($request->id);
+        $row = MedicoEspecialidade::where('medico_id', $request->before_medico_id)
+            ->where('especialidade_id', $request->before_especialidade_id)
+            ->first();
+        dd($row);
         $result = $row->update([
             'medico_id' => $request->medico_id,
             'especialidade_id' => $request->especialidade_id,
@@ -81,10 +90,5 @@ class MedicoEspecialidadeController extends Controller
         $row = MedicoEspecialidade::find($request->id);
         $row->delete();
         return response()->json(['success' => true]);
-    }
-
-    public function countRows()
-    {
-        return MedicoEspecialidade::count();
     }
 }

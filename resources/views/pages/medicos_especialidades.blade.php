@@ -8,19 +8,19 @@
     </div>
 
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-especialidade"
-        onclick=" $('#modal-label-especialidade').html('Incluir Médico por Especialidade');resetForm();">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-medicos-especialidades"
+        onclick=" $('#modal-label-medicos-especialidades').html('Incluir Médico por Especialidade');resetForm();">
         Novo
     </button>
     <br><br>
 
     <!-- Modal -->
-    <div class="modal fade" id="modal-especialidade" tabindex="-1" aria-labelledby="modal-label-especialidade"
+    <div class="modal fade" id="modal-medicos-especialidades" tabindex="-1" aria-labelledby="modal-label-medicos-especialidades"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modal-label-especialidade">Inclusão de Especialidade</h1>
+                    <h1 class="modal-title fs-5" id="modal-label-medicos-especialidades">Inclusão de Especialidade</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -28,7 +28,8 @@
                         <div class="card-body text-light"></div>
                     </div>
                     <form action="" method="post" enctype="multipart/form-data" id="frm-medicos-especialistas">
-                        <input type="hidden" name="id" id="id">
+                        <input type="hidden" name="before_medico_id" value="">
+                        <input type="hidden" name="before_especialidade_id" value="">
                         <div class="mb-3">
                             <label for="medico_id">Médico</label>
                             <select class="form-select" id="medico_id" name="medico_id"
@@ -176,20 +177,22 @@
 
     {{-- Funções chamadas de forma inline só funcionam neste bloco que não possui o atributo 'type' --}}
     <script>
-        function consultar(id) {
+        function consultar(medico_id, especialidade_id) {
             resetForm();
+            $('input[name=before_medico_id]').val(medico_id);
+            $('input[name=before_especialidade_id]').val(especialidade_id);
             $.ajax({
                 type: "POST",
                 url: "{{ url('medicos_especialidades/consultar') }}",
                 data: {
-                    id: id
+                    medico_id: medico_id,
+                    especialidade_id : especialidade_id
                 },
                 dataType: 'json',
                 success: function(data) {
-                    $('#modal-label-especialidade').html("Alterar Especialidade");
-                    $('#id').val(data.id);
-                    $('#nome').val(data.nome);
-                    $('#descricao').val(data.descricao);
+                    $('#modal-label-especialidade').html("Alterar Medicos por Especialidade");
+                    $('#medico_id').val(data.medico_id);
+                    $('#especialidade_id').val(data.especialidade_id);
                 }
             });
         }
@@ -214,7 +217,7 @@
             $('.card').hide();
             $('.card-body ').html('');
             $('#frm-medicos-especialistas input').val('');
-            $('#frm-medicos-especialistas textarea').val('');
+            $('#frm-medicos-especialistas select').val('');
         }
     </script>
 

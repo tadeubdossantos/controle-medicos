@@ -19,7 +19,9 @@ use App\Http\Controllers\MedicoEspecialidadeController;
 Route::get('/', function () {
     $especialidade = new EspecialidadeController();
     $qtdEspecialidades = $especialidade->countRows();
-    return view('pages.home', compact('qtdEspecialidades'));
+    $medicos = new MedicoController();
+    $qtdMedicos = $medicos->countRows();
+    return view('pages.home', compact('qtdEspecialidades', 'qtdMedicos'));
 });
 
 

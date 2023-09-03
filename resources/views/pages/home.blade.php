@@ -17,8 +17,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Médicos</h5>
-                    <p class="card-text">Total de médicos cadastrados: </p>
-
+                    <p class="card-text">Total: {{ $qtdMedicos }}</p>
                 </div>
             </div>
         </div>

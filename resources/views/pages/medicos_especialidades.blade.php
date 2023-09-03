@@ -31,7 +31,8 @@
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">
                             <label for="medico_id">Médico</label>
-                            <select class="form-select" id="medico_id" name="medico_id" aria-label="Floating label select example">
+                            <select class="form-select" id="medico_id" name="medico_id"
+                                aria-label="Floating label select example">
                                 <option>Nenhum</option>
                                 @foreach ($medicos as $medico)
                                     <option value="{{ $medico->id }}">{{ $medico->nome }}</option>
@@ -41,7 +42,8 @@
 
                         <div class="mb-3">
                             <label for="especialidade_id">Especialidade</label>
-                            <select class="form-select" id="especialidade_id" name="especialidade_id" aria-label="Floating label select example">
+                            <select class="form-select" id="especialidade_id" name="especialidade_id"
+                                aria-label="Floating label select example">
                                 <option>Nenhum</option>
                                 @foreach ($especialidades as $especialidade)
                                     <option value="{{ $especialidade->id }}">{{ $especialidade->nome }}</option>
@@ -91,8 +93,7 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ url('medicos_especialidades/lista') }}",
-                columns: [
-                    {
+                columns: [{
                         data: 'medico_nome',
                         name: 'medico_nome'
                     },
@@ -154,7 +155,15 @@
                         resetForm();
                         $('.btn-close').click();
                     },
-                    error: function() {
+                    error: function(error) {
+                        if (error.responseJSON.message && (error.responseJSON.message).indexOf(
+                                'SQLSTATE[23000]') !== -1) {
+                            $('.card').hide();
+                            $('.card-body').html(`<p>Esta especialidade ${$('#especialidade_id').text()} já foi incluída para este médico(a)
+                                ${$('#medico_id').text()}</p>`);
+                            return $('.card').show();
+                        }
+
                         alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                     }
                 })
@@ -177,7 +186,6 @@
                 },
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data);
                     $('#modal-label-especialidade').html("Alterar Especialidade");
                     $('#id').val(data.id);
                     $('#nome').val(data.nome);

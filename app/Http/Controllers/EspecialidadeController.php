@@ -32,46 +32,55 @@ class EspecialidadeController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
+            return response()->json(['result' => -1, 'errors' => $validator->errors()]);
         }
 
         $result = Especialidade::create([
             'nome' => $request->nome,
             'descricao' => $request->descricao
         ]);
-       return $result;
+        if(!$result) {
+            return response()->json(['result' => -2]);
+        }
+
+        return response()->json(['result' => 1]);
     }
 
     public function read(Request $request) {
-        $result = Especialidade::where('id', '=', $request->id)->first();
-        return Response()->json($result);
+        $especialidade = Especialidade::where('id', '=', $request->id)->first();
+        if(!$especialidade) {
+            return response()->json(['result' => -1]);
+        }
+        return response()->json(['result' => 1, 'data' => $especialidade]);
     }
 
-    public function alterar(Request $request) {
-
+    public function update(Request $request) {
         $validator = Validator::make($request->all(),
             [ 'nome' => 'required' ],
             [ 'nome.required' => 'Preencha o campo Nome' ]
         );
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
+            return response()->json(['result' => -1, 'errors' => $validator->errors()]);
         }
 
-        $row = Especialidade::find($request->id);
-        $result = $row->update([
+        $especialidade = Especialidade::find($request->id);
+        $especialidade = $especialidade->update([
             'nome' => $request->nome,
             'descricao' => $request->descricao
         ]);
-        if(!$result)
-            return response()->json(['success' => false]);
-        return response()->json(['success' => true]);
+        if(!$especialidade) {
+            return response()->json(['result' => -1]);
+        }
+        return response()->json(['result' => 1]);
     }
 
     public function delete(Request $request) {
-        $row = Especialidade::find($request->id);
-        $row->delete();
-        return response()->json(['success' => true]);
+        $especialidade = Especialidade::find($request->id)->delete();
+        if(!$especialidade) {
+            return response()->json(['result' => -1]);
+        }
+        return response()->json(['result' => 1]);
     }
 
     public function countRows() {

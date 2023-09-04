@@ -9,7 +9,7 @@
 
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-especialidade"
-        onclick=" $('#modal-label-especialidade').html('Incluir Especialidade');resetForm();">
+        onclick=" $('#modal-label-especialidade').html('Inclusão de Especialidade');resetForm();">
         Novo
     </button>
     <br><br>
@@ -20,7 +20,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="modal-label-especialidade">Inclusão de Especialidade</h1>
+                    <h1 class="modal-title fs-5" id="modal-label-especialidade"></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -31,19 +31,17 @@
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome:</label>
-                            <input type="text" class="form-control" id="nome" name="nome">
-                            {{-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> --}}
+                            <input type="text" class="form-control" id="nome" name="nome" maxlength="30">
                         </div>
 
                         <div class="mb-3">
                             <label for="nome" class="form-label">Descrição:</label>
-                            <textarea class="form-control" id="descricao" style="height: 100px" name="descricao"></textarea>
+                            <textarea class="form-control" id="descricao" style="height: 100px" name="descricao" maxlength="255"></textarea>
                         </div>
 
                         <div class="mb-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary" id="btnIncluir">Registar</button>
-                            {{-- <input type="submit" value="Registrar"> --}}
                         </div>
                     </form>
                 </div>
@@ -170,32 +168,40 @@
             $.ajax({
                 type: "POST",
                 url: "{{ url('especialidades/consultar') }}",
-                data: {
-                    id: id
-                },
+                data: { id: id },
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data);
+                    let dados = data.data;
                     $('#modal-label-especialidade').html("Alterar Especialidade");
-                    $('#id').val(data.id);
-                    $('#nome').val(data.nome);
-                    $('#descricao').val(data.descricao);
+                    $('#id').val(dados.id);
+                    $('#nome').val(dados.nome);
+                    $('#descricao').val(dados.descricao);
+                },
+                error: function() {
+                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                 }
             });
         }
 
         function excluir(id) {
-            if (!confirm("Deseja realmente excluir?")) return;
+            if(!confirm("Deseja realmente excluir?")) return;
             $.ajax({
                 type: "POST",
                 url: "{{ url('especialidades/excluir') }}",
-                data: {
-                    id: id
-                },
+                data: { id: id },
                 dataType: 'json',
                 success: function(data) {
+                    if(data.result < 0) {
+                        return alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                    }
+                    alert('Exclusão realizada com sucesso!');
                     var oTable = $('#table-especialidades').dataTable();
                     oTable.fnDraw(false);
+                },
+                error: function(e) {
+                    if(e.responseJSON.message.indexOf('SQLSTATE[23000]') !== 1)
+                        return alert('Essa especialidade já está vinculado com um médico, portanto não vai ser permtido excluir!');
+                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                 }
             });
         }

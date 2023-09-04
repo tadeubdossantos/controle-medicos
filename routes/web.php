@@ -29,7 +29,7 @@ Route::prefix('especialidades')->group(function () {
     Route::post('/lista', [EspecialidadeController::class, 'index']);
     Route::post('/cadastrar', [EspecialidadeController::class, 'create'])->name('especialidades.create');
     Route::post('/consultar', [EspecialidadeController::class, 'read']);
-    Route::post('/alterar', [EspecialidadeController::class, 'alterar']);
+    Route::post('/alterar', [EspecialidadeController::class, 'update']);
     Route::post('/excluir', [EspecialidadeController::class, 'delete']);
 });
 

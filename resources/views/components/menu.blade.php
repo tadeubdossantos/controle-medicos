@@ -4,7 +4,7 @@
             <li class="nav-item">
                 <a class="nav-link {{ request()->path() == '/' ? 'active' : '' }}" href="/">
                     <span data-feather="home" class="align-text-bottom"></span>
-                    Home
+                    Início
                 </a>
             </li>
             <li class="nav-item">

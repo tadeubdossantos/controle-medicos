@@ -60,7 +60,6 @@
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Nome</th>
-                    <th scope="col">Descrição</th>
                     <th scope="col">Data de Cadastro</th>
                     <th scope="col">Ações</th>
                 </tr>
@@ -91,10 +90,6 @@
                     {
                         data: 'nome',
                         name: 'nome'
-                    },
-                    {
-                        data: 'descricao',
-                        name: 'descricao'
                     },
                     {
                         data: 'data_formatada',

@@ -12,8 +12,7 @@ use Datatables;
 
 class MedicoController extends Controller
 {
-    public function index()
-    {
+    public function index() {
         if (request()->ajax()) {
             return datatables()
                 ->of(Medico::select('*'))
@@ -30,8 +29,7 @@ class MedicoController extends Controller
         return view('pages.medicos', compact('especialidades'));
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $validator = Validator::make($request->all(), ['nome' => 'required', 'crm' => 'required'], ['nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM']);
 
         if ($validator->fails()) {
@@ -65,8 +63,7 @@ class MedicoController extends Controller
         return response()->json(['result' => 1]);
     }
 
-    public function read(Request $request)
-    {
+    public function read(Request $request) {
         if (empty(($idMedico = $request->id))) {
             return -1;
         }
@@ -75,8 +72,7 @@ class MedicoController extends Controller
         return Response()->json($medico);
     }
 
-    public function alterar(Request $request)
-    {
+    public function alterar(Request $request) {
         $validator = Validator::make($request->all(), ['nome' => 'required', 'crm' => 'required'], ['nome.required' => 'Preencha o campo Nome', 'crm.required' => 'Preencha o campo CRM']);
 
         if ($validator->fails()) {
@@ -130,11 +126,19 @@ class MedicoController extends Controller
         return response()->json(['result' => 1]);
     }
 
-    public function delete(Request $request)
-    {
-        $row = Medico::find($request->id);
-        $row->delete();
-        return response()->json(['success' => true]);
+    public function delete(Request $request) {
+        $medicoId = $request->id;
+        DB::beginTransaction();
+        try {
+            $medicoEspecialidades = MedicoEspecialidade::where('medico_id', '=', $medicoId)->delete();
+            $medico = Medico::find($medicoId)->delete();
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['result' => -1, 'error' => $e]);
+        }
+
+        DB::commit();
+        return response()->json(['result' => true]);
     }
 
     public function countRows()

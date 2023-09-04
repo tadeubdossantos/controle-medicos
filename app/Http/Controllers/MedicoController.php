@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Medico;
 use App\Models\Especialidade;
+use App\Models\MedicoEspecialidade;
 use Datatables;
 
 class MedicoController extends Controller
 {
-    public function index()
-    {
+    public function index() {
         if (request()->ajax()) {
             return datatables()
                 ->of(Medico::select('*'))
@@ -31,19 +31,41 @@ class MedicoController extends Controller
 
     public function create(Request $request)
     {
-        $validator = Validator::make($request->all(), ['nome' => 'required', 'crm' => 'required'], ['nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM']);
+        $validator = Validator::make($request->all(),
+            ['nome' => 'required', 'crm' => 'required'],
+            ['nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM'
+        ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
         }
 
-        $result = Medico::create([
-            'nome' => $request->nome,
-            'crm' => $request->crm,
-            'telefone' => $request->telefone,
-            'email' => $request->email,
-        ]);
-        return $result;
+        DB::beginTransaction();
+
+        try {
+            $novoMedico = Medico::create([
+                'nome' => $request->nome,
+                'crm' => $request->crm,
+                'telefone' => $request->telefone,
+                'email' => $request->email,
+            ]);
+
+            $idNovoMedico = $novoMedico->id;
+            $especialidades = $request->especialidades;
+            foreach($especialidades as $especialidade) {
+                MedicoEspecialidade::create([
+                    'medico_id' => $idNovoMedico,
+                    'especialidade_id' => $especialidade
+                ]);
+            }
+        }
+        catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['result' => -1]);
+        }
+
+        DB::commit();
+        return response()->json(['result' => 1]);
     }
 
     public function read(Request $request)

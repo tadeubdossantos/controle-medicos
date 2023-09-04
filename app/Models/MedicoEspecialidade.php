@@ -10,7 +10,7 @@ class MedicoEspecialidade extends Model
     use HasFactory;
 
     protected $table = 'medicos_especialidades';
-    protected $primaryKey = null;
+    // protected $primaryKey = null;
 
     protected $fillable = [
         'medico_id',

@@ -41,8 +41,11 @@
                             <input type="text" class="form-control" id="telefone" name="telefone">
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">email:</label>
+                            <label for="email" class="form-label">E-mail:</label>
                             <input type="text" class="form-control" id="email" name="email">
+                        </div>
+                        <div class="mb-3">
+                            <h5>Especialidades:</h5>
                         </div>
                         <div class="mb-3">
                             @php
@@ -59,22 +62,22 @@
                             @if($qtdEspecialistas > 0)
                                 <div class="row">
                                     <div class="col">
-                                        @foreach ($especialidadesCol1 as $especialistaCol1)
+                                        @foreach ($especialidadesCol1 as $especialidadeCol1)
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" value={{ $especialistaCol1->id}}>
-                                                <label class="form-check-label" for="flexCheckDefault">
-                                                    {{ $especialistaCol1->nome }}
+                                                <input class="form-check-input" type="checkbox" value="{{ $especialidadeCol1->id }}" name="especialidades[]">
+                                                <label class="form-check-label">
+                                                    {{ $especialidadeCol1->nome }}
                                                 </label>
                                             </div>
                                         @endforeach
                                     </div>
                                     @if(count($especialidadesCol2) > 0)
                                         <div class="col">
-                                            @foreach ($especialidadesCol2 as $especialistaCol2)
+                                            @foreach ($especialidadesCol2 as $especialidadeCol2)
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" value={{ $especialistaCol2->id}}>
-                                                    <label class="form-check-label" for="flexCheckDefault">
-                                                        {{ $especialistaCol2->nome }}
+                                                    <input class="form-check-input" type="checkbox" value="{{ $especialidadeCol2->id }}" name="especialidades[]">
+                                                    <label class="form-check-label">
+                                                        {{ $especialidadeCol2->nome }}
                                                     </label>
                                                 </div>
                                             @endforeach
@@ -194,6 +197,7 @@
                     contentType: false,
                     processData: false,
                     success: function(data) {
+                        return console.log(formData);
                         if (data.errors) {
 
                             console.log('error')
@@ -263,8 +267,10 @@
         function resetForm() {
             $('.card').hide();
             $('.card-body ').html('');
-            $('#frm-medicos input').val('');
-            $('#frm-medicos textarea').val('');
+            $('#frm-medicos input[type=text]').val('');
+            $('#frm-medicos input[type=checkbox]').is(':checked').each(function(){
+                $(this).prop('checked', false);
+            });
         }
     </script>
 

@@ -12,7 +12,8 @@ use Datatables;
 
 class MedicoController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         if (request()->ajax()) {
             return datatables()
                 ->of(Medico::select('*'))
@@ -29,11 +30,9 @@ class MedicoController extends Controller
         return view('pages.medicos', compact('especialidades'));
     }
 
-    public function create(Request $request) {
-        $validator = Validator::make($request->all(),
-            ['nome' => 'required', 'crm' => 'required'],
-            ['nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM'
-        ]);
+    public function create(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['nome' => 'required', 'crm' => 'required'], ['nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM']);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -51,14 +50,13 @@ class MedicoController extends Controller
 
             $idNovoMedico = $novoMedico->id;
             $especialidades = $request->especialidades;
-            foreach($especialidades as $especialidade) {
+            foreach ($especialidades as $especialidade) {
                 MedicoEspecialidade::create([
                     'medico_id' => $idNovoMedico,
-                    'especialidade_id' => $especialidade
+                    'especialidade_id' => $especialidade,
                 ]);
             }
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['result' => -1]);
         }
@@ -67,8 +65,11 @@ class MedicoController extends Controller
         return response()->json(['result' => 1]);
     }
 
-    public function read(Request $request) {
-        if(empty($idMedico = $request->id)) return -1;
+    public function read(Request $request)
+    {
+        if (empty(($idMedico = $request->id))) {
+            return -1;
+        }
         $medico = Medico::where('id', '=', $idMedico)->first();
         $medico['especialidades'] = MedicoEspecialidade::where('medico_id', '=', $idMedico)->get();
         return Response()->json($medico);
@@ -82,17 +83,51 @@ class MedicoController extends Controller
             return response()->json(['errors' => $validator->errors()]);
         }
 
-        $row = Medico::find($request->id);
-        $result = $row->update([
-            'nome' => $request->nome,
-            'crm' => $request->crm,
-            'telefone' => $request->telefone,
-            'email' => $request->email,
-        ]);
-        if (!$result) {
-            return response()->json(['success' => false]);
+        DB::beginTransaction();
+        try {
+            $medicoId = $request->id;
+            $medico = Medico::find($medicoId);
+            $medico = $medico->update([
+                'nome' => $request->nome,
+                'crm' => $request->crm,
+                'telefone' => $request->telefone,
+                'email' => $request->email,
+            ]);
+
+            // Se houver especialidades checkadas
+            if(count($especialidadesMedico = ($request->especialidades ?? [])) > 0) {
+                // Vincula especialidades novas checkadas
+                foreach($especialidadesMedico as $especialidadeId) {
+                    $result = MedicoEspecialidade::where('medico_id', '=', $medicoId)
+                        ->where('especialidade_id', '=', $especialidadeId)
+                        ->first();
+                    if(empty($result)) {
+                        $retorno = MedicoEspecialidade::create([
+                            'medico_id' => $medicoId,
+                            'especialidade_id' => $especialidadeId,
+                        ]);
+                    }
+                }
+
+                // Verificar a possibilidade de houver especialidades não mais pertecentes ao médico
+                $especialidadesGravadas = MedicoEspecialidade::where('medico_id', '=', $medicoId);
+                foreach($especialidadesMedico as $especialidadeId) {
+                   $especialidadesGravadas->where('especialidade_id', '<>', $especialidadeId);
+                }
+                $especialidadesGravadas->delete();
+
+            /* Senão houver nenhuma especialidade checkada então verificar se tem alguma que já foi vinculada
+            anteriormente para excluir */
+            }else if(empty($especialidadesMedico)) {
+                $medicoEspecialidades = MedicoEspecialidade::where('medico_id', '=', $medicoId)->delete();
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['result' => -1]);
         }
-        return response()->json(['success' => true]);
+
+        DB::commit();
+        return response()->json(['result' => 1]);
     }
 
     public function delete(Request $request)

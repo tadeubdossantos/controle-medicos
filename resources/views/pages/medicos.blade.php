@@ -199,7 +199,6 @@
                     success: function(data) {
                         return console.log(formData);
                         if (data.errors) {
-
                             console.log('error')
                             $('.card').hide();
                             $('.card-body').html('');

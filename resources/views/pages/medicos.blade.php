@@ -231,12 +231,9 @@
             $.ajax({
                 type: "POST",
                 url: "{{ url('medicos/consultar') }}",
-                data: {
-                    id: id
-                },
+                data: { id: id },
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data);
                     $('#modal-label-medico').html("Alterar Medico");
                     $('#id').val(data.id);
                     $('#nome').val(data.nome);
@@ -244,6 +241,13 @@
                     $('#telefone').val(data.telefone);
                     $('#email').val(data.email);
                     $('#descricao').val(data.descricao);
+                    data.especialidades.forEach(function(value) {
+                        let idEspecialidade = value.especialidade_id;
+                        $('input[type=checkbox]').each(function(index){
+                            if($(this).val() == idEspecialidade)
+                                $(`input[type=checkbox][value=${idEspecialidade}]`).prop('checked', true);
+                        });
+                    });
                 }
             });
         }
@@ -268,7 +272,7 @@
             $('.card').hide();
             $('.card-body ').html('');
             $('#frm-medicos input[type=text]').val('');
-            $('#frm-medicos input[type=checkbox]').is(':checked').each(function(){
+            $('#frm-medicos input[type=checkbox]').each(function(){
                 $(this).prop('checked', false);
             });
         }

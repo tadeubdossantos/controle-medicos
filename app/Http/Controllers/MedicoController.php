@@ -29,8 +29,7 @@ class MedicoController extends Controller
         return view('pages.medicos', compact('especialidades'));
     }
 
-    public function create(Request $request)
-    {
+    public function create(Request $request) {
         $validator = Validator::make($request->all(),
             ['nome' => 'required', 'crm' => 'required'],
             ['nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM'
@@ -68,10 +67,11 @@ class MedicoController extends Controller
         return response()->json(['result' => 1]);
     }
 
-    public function read(Request $request)
-    {
-        $result = Medico::where('id', '=', $request->id)->first();
-        return Response()->json($result);
+    public function read(Request $request) {
+        if(empty($idMedico = $request->id)) return -1;
+        $medico = Medico::where('id', '=', $idMedico)->first();
+        $medico['especialidades'] = MedicoEspecialidade::where('medico_id', '=', $idMedico)->get();
+        return Response()->json($medico);
     }
 
     public function alterar(Request $request)

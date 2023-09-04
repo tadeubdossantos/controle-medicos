@@ -45,6 +45,45 @@
                             <input type="text" class="form-control" id="email" name="email">
                         </div>
                         <div class="mb-3">
+                            @php
+                                if(($qtdEspecialistas = count($especialidades)) > 0) {
+                                    $rowsCol1 = $rowsCol2 = intval($qtdEspecialistas / 2);
+                                    $rowsCol1 += ($qtdEspecialistas % 2);
+                                    $especialidadesCol1 = $especialidadesCol2 = [];
+                                    foreach ($especialidades as $key => $especialidade) {
+                                        if(($key) < $rowsCol1) $especialidadesCol1[] = $especialidades[$key];
+                                        else $especialidadesCol2[] = $especialidades[$key];
+                                    }
+                                }
+                            @endphp
+                            @if($qtdEspecialistas > 0)
+                                <div class="row">
+                                    <div class="col">
+                                        @foreach ($especialidadesCol1 as $especialistaCol1)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" value={{ $especialistaCol1->id}}>
+                                                <label class="form-check-label" for="flexCheckDefault">
+                                                    {{ $especialistaCol1->nome }}
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @if(count($especialidadesCol2) > 0)
+                                        <div class="col">
+                                            @foreach ($especialidadesCol2 as $especialistaCol2)
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" value={{ $especialistaCol2->id}}>
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        {{ $especialistaCol2->nome }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                        <div class="mb-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary" id="btnIncluir">Registar</button>
                             {{-- <input type="submit" value="Registrar"> --}}

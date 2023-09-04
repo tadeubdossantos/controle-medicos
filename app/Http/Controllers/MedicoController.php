@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Medico;
+use App\Models\Especialidade;
 use Datatables;
 
 class MedicoController extends Controller
@@ -24,7 +25,8 @@ class MedicoController extends Controller
                 ->make(true);
         }
 
-        return view('pages.medicos');
+        $especialidades = Especialidade::all();
+        return view('pages.medicos', compact('especialidades'));
     }
 
     public function create(Request $request)

@@ -27,8 +27,14 @@
                 </a>
             </li>
         </ul>
+        <hr class="my-3">
         <ul class="nav flex-column">
-            <hr class="my-3">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->path() == 'relatorio' ? 'active' : '' }}" href="{{ route('relatorio.list') }}">
+                    <span data-feather="shopping-cart" class="align-text-bottom"></span>
+                    Relatório
+                </a>
+            </li>
         <ul>
     </div>
 </nav>

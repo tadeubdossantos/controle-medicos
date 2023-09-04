@@ -16,7 +16,7 @@
             <div class="col">
                 <label for="especialidade" class="form-label">Especialidade</label>
                 <select class="form-select" name="especialidade">
-                    <option value="" selected>Nenhum</option>
+                    <option value="" selected>Todos</option>
                     @foreach ($especialidades as $especialidade)
                         <option value="{{ $especialidade->id }}">{{ $especialidade->nome }}
                         </option>

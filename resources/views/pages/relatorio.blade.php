@@ -90,8 +90,11 @@
                         crm: $('input[name=crm]').val(),
                         especialidade: $('select[name=especialidade]').val()
                     },
-                    dataSrc: function(json) {
-                        return json.data;
+                    dataSrc: function(data) {
+                        if(data.result < 0) {
+                            return alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                        }
+                        return data.data;
                     }
                 },
                 columns: [
@@ -103,7 +106,7 @@
                         data: 'especialidade_nome',
                         name: 'especialidade_nome'
                     }
-                    ]
+                ]
             });
         }
     </script>

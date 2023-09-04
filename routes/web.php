@@ -43,7 +43,7 @@ Route::prefix('medicos')->group(function () {
 });
 
 Route::prefix('relatorio')->group(function () {
+    Route::get('/', [MedicoEspecialidadeController::class, 'index'])->name('relatorio.list');
     Route::post('/', [MedicoEspecialidadeController::class, 'relatorio']);
-    Route::get('/', [MedicoEspecialidadeController::class, 'relatorio'])->name('relatorio.list');
 });
 

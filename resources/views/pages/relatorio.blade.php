@@ -35,6 +35,7 @@
             <thead>
                 <tr>
                     <th scope="col">Médico</th>
+                    <th scope="col">Especialidade</th>
                 </tr>
             </thead>
         </table>
@@ -93,10 +94,16 @@
                         return json.data;
                     }
                 },
-                columns: [{
-                    data: 'medico_nome',
-                    name: 'medico_nome'
-                }]
+                columns: [
+                    {
+                        data: 'medico_nome',
+                        name: 'medico_nome'
+                    },
+                    {
+                        data: 'especialidade_nome',
+                        name: 'especialidade_nome'
+                    }
+                    ]
             });
         }
     </script>

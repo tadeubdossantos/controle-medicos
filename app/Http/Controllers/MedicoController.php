@@ -4,15 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Models\Medico;
 use Datatables;
 
 class MedicoController extends Controller
 {
-    public function index() {
-
-        if(request()->ajax()) {
-            return datatables()->of(Medico::select('*'))
+    public function index()
+    {
+        if (request()->ajax()) {
+            return datatables()
+                ->of(Medico::select('*'))
                 ->addColumn('data_formatada', function ($data) {
                     return $data->created_at->format('d/m/Y H:i');
                 })
@@ -25,12 +27,9 @@ class MedicoController extends Controller
         return view('pages.medicos');
     }
 
-    public function create(Request $request) {
-
-        $validator = Validator::make($request->all(),
-            [ 'nome' => 'required', 'crm' => 'required' ],
-            [ 'nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM']
-        );
+    public function create(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['nome' => 'required', 'crm' => 'required'], ['nome.required' => 'Preencha o campo nome', 'crm.required' => 'Preencha o campo CRM']);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -40,21 +39,20 @@ class MedicoController extends Controller
             'nome' => $request->nome,
             'crm' => $request->crm,
             'telefone' => $request->telefone,
-            'email' => $request->email
+            'email' => $request->email,
         ]);
-       return $result;
+        return $result;
     }
 
-    public function read(Request $request) {
+    public function read(Request $request)
+    {
         $result = Medico::where('id', '=', $request->id)->first();
         return Response()->json($result);
     }
 
-    public function alterar(Request $request) {
-        $validator = Validator::make($request->all(),
-            [ 'nome' => 'required', 'crm' => 'required' ],
-            [ 'nome.required' => 'Preencha o campo Nome', 'crm.required' => 'Preencha o campo CRM']
-        );
+    public function alterar(Request $request)
+    {
+        $validator = Validator::make($request->all(), ['nome' => 'required', 'crm' => 'required'], ['nome.required' => 'Preencha o campo Nome', 'crm.required' => 'Preencha o campo CRM']);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -65,21 +63,23 @@ class MedicoController extends Controller
             'nome' => $request->nome,
             'crm' => $request->crm,
             'telefone' => $request->telefone,
-            'email' => $request->email
+            'email' => $request->email,
         ]);
-        if(!$result)
+        if (!$result) {
             return response()->json(['success' => false]);
+        }
         return response()->json(['success' => true]);
     }
 
-    public function delete(Request $request) {
+    public function delete(Request $request)
+    {
         $row = Medico::find($request->id);
         $row->delete();
         return response()->json(['success' => true]);
     }
 
-    public function countRows() {
+    public function countRows()
+    {
         return Medico::count();
     }
-
 }

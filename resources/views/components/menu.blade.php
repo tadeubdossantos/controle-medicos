@@ -27,5 +27,8 @@
                 </a>
             </li>
         </ul>
+        <ul class="nav flex-column">
+            <hr class="my-3">
+        <ul>
     </div>
 </nav>

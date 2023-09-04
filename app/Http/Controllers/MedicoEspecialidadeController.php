@@ -38,10 +38,7 @@ class MedicoEspecialidadeController extends Controller
 
     public function create(Request $request)
     {
-        $validator = Validator::make($request->all(),
-            ['medico_id' => 'required', 'especialidade_id' => 'required'],
-            ['medico_id.required' => 'Selecione o médico', 'especialidade_id.required' => 'Selecione a especialidade']
-        );
+        $validator = Validator::make($request->all(), ['medico_id' => 'required', 'especialidade_id' => 'required'], ['medico_id.required' => 'Selecione o médico', 'especialidade_id.required' => 'Selecione a especialidade']);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -68,5 +65,26 @@ class MedicoEspecialidadeController extends Controller
             return response()->json(['success' => false]);
         }
         return response()->json(['success' => true]);
+    }
+
+    public function relatorio(Request $request)
+    {
+        if (request()->ajax()) {
+            $crm = $request->crm ?? '';
+            $especialidade = $request->especialidade ?? '';
+            $query = MedicoEspecialidade::select('medicos.nome as medico_nome', 'especialidades.nome as especialidade_nome', 'medicos.crm', 'medicos.telefone', 'medicos.email')
+                ->join('medicos', 'medicos.id', '=', 'medicos_especialidades.medico_id')
+                ->join('especialidades', 'especialidades.id', '=', 'medicos_especialidades.especialidade_id')
+                ->where('medicos.crm', 'like', '%' . $crm . '%');
+            if (!empty($especialidade)) {
+                $query->Where('especialidades.id', '=', $especialidade);
+            }
+            return datatables()
+                ->of($query->get())
+                ->make(true);
+        }
+
+        $especialidades = Especialidade::orderBy('nome')->get();
+        return view('pages.relatorio', compact('especialidades'));
     }
 }

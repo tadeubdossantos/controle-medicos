@@ -156,8 +156,7 @@
                         if(error.responseJSON.message) {
                             if((error.responseJSON.message).indexOf('SQLSTATE[23000]') !== -1) {
                                 $('.card').hide();
-                                $('.card-body').html(`<p>Esta especialidade ${$('#especialidade_id').text()} já foi incluída para este médico(a)
-                                    ${$('#medico_id').text()}</p>`);
+                                $('.card-body').html(`<p>Esta especialidade já foi incluída para este médico(a)</p>`);
                                 return $('.card').show();
                             } // Está acusando erro, mas está incluído registro.
                             else if((error.responseJSON.message).indexOf('Model::setAttribute()') !== -1) {

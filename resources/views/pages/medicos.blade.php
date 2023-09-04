@@ -30,32 +30,37 @@
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">
                             <label for="nome" class="form-label">Nome:</label>
-                            <input type="text" class="form-control" id="nome" name="nome">
+                            <input type="text" class="form-control" id="nome" name="nome" maxlength="30">
                         </div>
                         <div class="mb-3">
                             <label for="crm" class="form-label">CRM:</label>
-                            <input type="text" class="form-control" id="crm" name="crm">
+                            <input type="text" class="form-control" id="crm" name="crm" maxlength="30">
                         </div>
                         <div class="mb-3">
                             <label for="telefone" class="form-label">Telefone:</label>
-                            <input type="text" class="form-control" id="telefone" name="telefone">
+                            <input type="text" class="form-control" id="telefone" name="telefone" maxlength="30">
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">E-mail:</label>
-                            <input type="text" class="form-control" id="email" name="email">
+                            <input type="email" class="form-control" id="email" name="email" maxlength="30">
                         </div>
                         <div class="mb-3">
                             <h5>Especialidades:</h5>
                         </div>
                         <div class="mb-3">
                             @php
-                                if(($qtdEspecialistas = count($especialidades)) > 0) {
+                                $qtdEspecialistas = count($especialidades);
+                                if($qtdEspecialistas > 0) {
                                     $rowsCol1 = $rowsCol2 = intval($qtdEspecialistas / 2);
                                     $rowsCol1 += ($qtdEspecialistas % 2);
                                     $especialidadesCol1 = $especialidadesCol2 = [];
                                     foreach ($especialidades as $key => $especialidade) {
-                                        if(($key) < $rowsCol1) $especialidadesCol1[] = $especialidades[$key];
-                                        else $especialidadesCol2[] = $especialidades[$key];
+                                        if(($key) < $rowsCol1) {
+                                            $especialidadesCol1[] = $especialidades[$key];
+                                        }
+                                        else {
+                                            $especialidadesCol2[] = $especialidades[$key];
+                                        }
                                     }
                                 }
                             @endphp
@@ -89,7 +94,6 @@
                         <div class="mb-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" class="btn btn-primary" id="btnIncluir">Registar</button>
-                            {{-- <input type="submit" value="Registrar"> --}}
                         </div>
                     </form>
                 </div>
@@ -199,9 +203,7 @@
                     contentType: false,
                     processData: false,
                     success: function(data) {
-                        return console.log(formData);
                         if (data.errors) {
-                            console.log('error')
                             $('.card').hide();
                             $('.card-body').html('');
                             Object.keys(data.errors).forEach(key => {
@@ -235,20 +237,27 @@
                 data: { id: id },
                 dataType: 'json',
                 success: function(data) {
+                    if(data.result < 0) {
+                        return alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                    }
+                    let dados = data.data;
                     $('#modal-label-medico').html("Alterar Medico");
-                    $('#id').val(data.id);
-                    $('#nome').val(data.nome);
-                    $('#crm').val(data.crm);
-                    $('#telefone').val(data.telefone);
-                    $('#email').val(data.email);
-                    $('#descricao').val(data.descricao);
-                    data.especialidades.forEach(function(value) {
+                    $('#id').val(dados.id);
+                    $('#nome').val(dados.nome);
+                    $('#crm').val(dados.crm);
+                    $('#telefone').val(dados.telefone);
+                    $('#email').val(dados.email);
+                    $('#descricao').val(dados.descricao);
+                    dados.especialidades.forEach(function(value) {
                         let idEspecialidade = value.especialidade_id;
                         $('input[type=checkbox]').each(function(index){
                             if($(this).val() == idEspecialidade)
                                 $(`input[type=checkbox][value=${idEspecialidade}]`).prop('checked', true);
                         });
                     });
+                },
+                error: function() {
+                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                 }
             });
         }
@@ -258,13 +267,18 @@
             $.ajax({
                 type: "POST",
                 url: "{{ url('medicos/excluir') }}",
-                data: {
-                    id: id
-                },
+                data: { id: id },
                 dataType: 'json',
                 success: function(data) {
+                    if(data.result < 0) {
+                        return alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                    }
+                    alert('Exclusão realizada com sucesso!');
                     var oTable = $('#table-medicos').dataTable();
                     oTable.fnDraw(false);
+                },
+                error: function() {
+                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                 }
             });
         }

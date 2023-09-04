@@ -28,7 +28,7 @@ class EspecialidadeController extends Controller
 
         $validator = Validator::make($request->all(),
             [ 'nome' => 'required' ],
-            [ 'nome.required' => 'Preenhca o campo nome'
+            [ 'nome.required' => 'Preencha o campo nome'
         ]);
 
         if ($validator->fails()) {
@@ -47,8 +47,9 @@ class EspecialidadeController extends Controller
     }
 
     public function read(Request $request) {
-        $especialidade = Especialidade::where('id', '=', $request->id)->first();
-        if(!$especialidade) {
+        $especialidadeId = $request->id;
+        $especialidade = Especialidade::where('id', '=', $especialidadeId)->first();
+        if(empty($especialidade)) {
             return response()->json(['result' => -1]);
         }
         return response()->json(['result' => 1, 'data' => $especialidade]);

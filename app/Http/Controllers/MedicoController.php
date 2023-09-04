@@ -47,12 +47,14 @@ class MedicoController extends Controller
             ]);
 
             $idNovoMedico = $novoMedico->id;
-            $especialidades = $request->especialidades;
-            foreach ($especialidades as $especialidade) {
-                MedicoEspecialidade::create([
-                    'medico_id' => $idNovoMedico,
-                    'especialidade_id' => $especialidade,
-                ]);
+            $medicoEspecialidades = $request->especialidades;
+            if(!empty($medicoEspecialidades)) {
+                foreach ($medicoEspecialidades as $especialidade) {
+                    MedicoEspecialidade::create([
+                        'medico_id' => $idNovoMedico,
+                        'especialidade_id' => $especialidade
+                    ]);
+                }
             }
         } catch (\Exception $e) {
             DB::rollback();

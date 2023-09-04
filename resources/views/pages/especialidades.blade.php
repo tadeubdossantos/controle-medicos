@@ -80,9 +80,11 @@
             });
 
             $('#table-especialidades').DataTable({
-                processing: true,
                 serverSide: true,
-                ajax: "{{ url('especialidades/lista') }}",
+                ajax: {
+                    url: "{{ url('especialidades/lista') }}",
+                    type: "POST"
+                },
                 columns: [{
                         data: 'id',
                         name: 'id'

@@ -129,9 +129,11 @@
             });
 
             $('#table-medicos').DataTable({
-                processing: true,
                 serverSide: true,
-                ajax: "{{ url('medicos/lista') }}",
+                ajax: {
+                    url: "{{ url('medicos/lista') }}",
+                    type: "POST",
+                },
                 columns: [{
                         data: 'id',
                         name: 'id'

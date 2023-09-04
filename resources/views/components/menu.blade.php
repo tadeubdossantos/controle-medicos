@@ -21,20 +21,11 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->path() == 'medicos_especialidades' ? 'active' : '' }}" href="{{ route('medicos_especialidades.list') }}">
-                    <span data-feather="shopping-cart" class="align-text-bottom"></span>
-                    Médicos por Especialidades
-                </a>
-            </li>
-        </ul>
-        <hr class="my-3">
-        <ul class="nav flex-column">
-            <li class="nav-item">
                 <a class="nav-link {{ request()->path() == 'relatorio' ? 'active' : '' }}" href="{{ route('relatorio.list') }}">
                     <span data-feather="shopping-cart" class="align-text-bottom"></span>
                     Relatório
                 </a>
             </li>
-        <ul>
+        </ul>
     </div>
 </nav>

@@ -38,7 +38,7 @@ Route::prefix('medicos')->group(function () {
     Route::post('/lista', [MedicoController::class, 'index']);
     Route::post('/cadastrar', [MedicoController::class, 'create'])->name('medicos.create');
     Route::post('/consultar', [MedicoController::class, 'read']);
-    Route::post('/alterar', [MedicoController::class, 'alterar']);
+    Route::post('/alterar', [MedicoController::class, 'update']);
     Route::post('/excluir', [MedicoController::class, 'delete']);
 });
 

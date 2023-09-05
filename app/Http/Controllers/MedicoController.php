@@ -76,7 +76,7 @@ class MedicoController extends Controller
         return Response()->json(['result' => 1, 'data' => $medico]);
     }
 
-    public function alterar(Request $request) {
+    public function update(Request $request) {
         $validator = Validator::make($request->all(),
             ['nome' => 'required', 'crm' => 'required'],
             ['nome.required' => 'Preencha o campo Nome', 'crm.required' => 'Preencha o campo CRM']

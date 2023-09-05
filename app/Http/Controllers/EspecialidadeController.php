@@ -42,7 +42,6 @@ class EspecialidadeController extends Controller
         if (!$result) {
             return response()->json(['result' => -2]);
         }
-
         return response()->json(['result' => 1]);
     }
 
@@ -71,7 +70,7 @@ class EspecialidadeController extends Controller
             'descricao' => $request->descricao
         ]);
         if (!$especialidade) {
-            return response()->json(['result' => -1]);
+            return response()->json(['result' => -2]);
         }
         return response()->json(['result' => 1]);
     }

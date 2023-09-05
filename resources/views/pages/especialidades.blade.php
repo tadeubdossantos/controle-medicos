@@ -143,8 +143,7 @@
                             });
                             return alertarErro(erros);
                         } else if (data.result == -2) {
-                            return alertarErro(
-                                `Houve algum problema! Por favor, tentar novamente mais tarde`);
+                            return alertarErro();
                         }
 
                         if (!$('#id').val()) {
@@ -155,8 +154,7 @@
                         }
                     },
                     error: function() {
-                        $('.alert').html(`Houve algum problema! Por favor, tentar novamente mais tarde!`)
-                            .addClass('alert-danger').slideDown();
+                        alertarErro();
                     }
                 })
                 .always(function(data) {
@@ -178,6 +176,9 @@
                 data: { id: id },
                 dataType: 'json',
                 success: function(data) {
+                    if (data.result < 0) {
+                        return alertarErro();
+                    }
                     let dados = data.data;
                     $('#modal-label-especialidade').html("Alterar Especialidade");
                     $('#id').val(dados.id);
@@ -185,7 +186,7 @@
                     $('#descricao').val(dados.descricao);
                 },
                 error: function() {
-                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                    alertErro();
                 }
             });
         }
@@ -207,9 +208,7 @@
                 },
                 error: function(e) {
                     if (e.responseJSON.message.indexOf('SQLSTATE[23000]') !== 1)
-                        return alert(
-                            'Essa especialidade já está vinculado com um médico, portanto não vai ser permtido excluir!'
-                        );
+                        return alert('Essa especialidade já está vinculado com um médico, portanto não vai ser permtido excluir!');
                     alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                 }
             });

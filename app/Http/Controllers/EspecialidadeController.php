@@ -10,9 +10,9 @@ use Datatables;
 class EspecialidadeController extends Controller
 {
     public function index() {
-
-        if(request()->ajax()) {
-            return datatables()->of(Especialidade::select('*'))
+        if (request()->ajax()) {
+            return datatables()
+                ->of(Especialidade::select('*'))
                 ->addColumn('data_formatada', function ($data) {
                     return $data->created_at->format('d/m/Y H:i');
                 })
@@ -25,11 +25,10 @@ class EspecialidadeController extends Controller
     }
 
     public function create(Request $request) {
-
         $validator = Validator::make($request->all(),
-            [ 'nome' => 'required' ],
-            [ 'nome.required' => 'Preencha o campo nome'
-        ]);
+            ['nome' => 'required'],
+            ['nome.required' => 'Preencha o campo nome']
+        );
 
         if ($validator->fails()) {
             return response()->json(['result' => -1, 'errors' => $validator->errors()]);
@@ -37,9 +36,10 @@ class EspecialidadeController extends Controller
 
         $result = Especialidade::create([
             'nome' => $request->nome,
-            'descricao' => $request->descricao
+            'descricao' => $request->descricao,
         ]);
-        if(!$result) {
+
+        if (!$result) {
             return response()->json(['result' => -2]);
         }
 
@@ -49,7 +49,7 @@ class EspecialidadeController extends Controller
     public function read(Request $request) {
         $especialidadeId = $request->id;
         $especialidade = Especialidade::where('id', '=', $especialidadeId)->first();
-        if(empty($especialidade)) {
+        if (empty($especialidade)) {
             return response()->json(['result' => -1]);
         }
         return response()->json(['result' => 1, 'data' => $especialidade]);
@@ -57,8 +57,8 @@ class EspecialidadeController extends Controller
 
     public function update(Request $request) {
         $validator = Validator::make($request->all(),
-            [ 'nome' => 'required' ],
-            [ 'nome.required' => 'Preencha o campo Nome' ]
+            ['nome' => 'required'],
+            ['nome.required' => 'Preencha o campo Nome']
         );
 
         if ($validator->fails()) {
@@ -70,7 +70,7 @@ class EspecialidadeController extends Controller
             'nome' => $request->nome,
             'descricao' => $request->descricao
         ]);
-        if(!$especialidade) {
+        if (!$especialidade) {
             return response()->json(['result' => -1]);
         }
         return response()->json(['result' => 1]);
@@ -78,7 +78,7 @@ class EspecialidadeController extends Controller
 
     public function delete(Request $request) {
         $especialidade = Especialidade::find($request->id)->delete();
-        if(!$especialidade) {
+        if (!$especialidade) {
             return response()->json(['result' => -1]);
         }
         return response()->json(['result' => 1]);

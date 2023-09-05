@@ -85,19 +85,24 @@ body {
     box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
   }
 
+  form span.required {
+    color: #ff0000;
+    margin-left: 0.2rem;
+  }
+
   .dt-buttons {
     display: none;
   }
 
-  .card {
+  .alert {
     margin-bottom: 20px;;
   }
 
-  .modal .card {
+  .modal .alert {
     display:none;
   }
 
-  .modal .card p {
+  .modal .alert p {
     margin-bottom:0;
   }
 

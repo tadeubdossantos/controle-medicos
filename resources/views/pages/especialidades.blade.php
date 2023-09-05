@@ -24,18 +24,16 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="card bg-danger">
-                        <div class="card-body text-light"></div>
-                    </div>
+                    <div class="alert" role="alert"></div>
                     <form action="" method="post" enctype="multipart/form-data" id="frm-especialidades">
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">
-                            <label for="nome" class="form-label">Nome:</label>
+                            <label for="nome" class="form-label">Nome</label><span class="required">*</span>
                             <input type="text" class="form-control" id="nome" name="nome" maxlength="30">
                         </div>
 
                         <div class="mb-3">
-                            <label for="nome" class="form-label">Descrição:</label>
+                            <label for="nome" class="form-label">Descrição</label>
                             <textarea class="form-control" id="descricao" style="height: 100px" name="descricao" maxlength="255"></textarea>
                         </div>
 
@@ -103,7 +101,7 @@
 
                 ],
                 order: [
-                    [0, 'desc']
+                    [0, 'asc']
                 ],
                 oLanguage: {
                     "sLengthMenu": "Mostrar _MENU_ registros por página",
@@ -128,36 +126,45 @@
             var rota = $('input[name=id]').val() === '' ?
                 "{{ url('especialidades/cadastrar') }}" :
                 "{{ url('especialidades/alterar') }}";
+            $('input.is-invalid').removeClass('is-invalid');
             $.ajax({
-                type: "POST",
-                url: rota,
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function(data) {
-                    if(data.errors) {
-                        $('.card').hide();
-                        $('.card-body').html('');
-                        Object.keys(data.errors).forEach(key => {
-                            $('.card-body').append(`<p>${data.errors[key][0]}</p>`);
-                        });
-                        return $('.card').show();
-                    }
+                    type: "POST",
+                    url: rota,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        if (data.result == -1) {
+                            let erros = '';
+                            Object.keys(data.errors).forEach(key => {
+                                $(`input[name=${key}]`).addClass('is-invalid');
+                                erros += `<p>${data.errors[key][0]}</p>`;
+                            });
+                            return alertarErro(erros);
+                        } else if (data.result == -2) {
+                            return alertarErro(
+                                `Houve algum problema! Por favor, tentar novamente mais tarde`);
+                        }
 
-                    if(!$('#id').val()) alert('Cadastro Realizado com sucesso!');
-                    else alert('Atualização Realizada com sucesso!');
-                    resetForm();
-                    $('.btn-close').click();
-                },
-                error: function() {
-                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
-                }
-            })
-            .always(function(data) {
-                var oTable = $("#table-especialidades").dataTable();
-                oTable.fnDraw(false);
-            });
+                        if (!$('#id').val()) {
+                            resetForm();
+                            alertarSucesso('Cadastro realizado com sucesso!');
+                        } else {
+                            alertarSucesso('Atualização realizada com sucesso!');
+                        }
+                    },
+                    error: function() {
+                        $('.alert').html(`Houve algum problema! Por favor, tentar novamente mais tarde!`)
+                            .addClass('alert-danger').slideDown();
+                    }
+                })
+                .always(function(data) {
+                    if (data.result == 1) {
+                        let oTable = $("#table-especialidades").dataTable();
+                        oTable.fnDraw(false);
+                    }
+                });
         });
     </script>
 
@@ -184,14 +191,14 @@
         }
 
         function excluir(id) {
-            if(!confirm("Deseja realmente excluir?")) return;
+            if (!confirm("Deseja realmente excluir?")) return;
             $.ajax({
                 type: "POST",
                 url: "{{ url('especialidades/excluir') }}",
                 data: { id: id },
                 dataType: 'json',
                 success: function(data) {
-                    if(data.result < 0) {
+                    if (data.result < 0) {
                         return alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                     }
                     alert('Exclusão realizada com sucesso!');
@@ -199,18 +206,49 @@
                     oTable.fnDraw(false);
                 },
                 error: function(e) {
-                    if(e.responseJSON.message.indexOf('SQLSTATE[23000]') !== 1)
-                        return alert('Essa especialidade já está vinculado com um médico, portanto não vai ser permtido excluir!');
+                    if (e.responseJSON.message.indexOf('SQLSTATE[23000]') !== 1)
+                        return alert(
+                            'Essa especialidade já está vinculado com um médico, portanto não vai ser permtido excluir!'
+                        );
                     alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                 }
             });
         }
 
         function resetForm() {
-            $('.card').hide();
-            $('.card-body ').html('');
+            $('input.is-invalid').removeClass('is-invalid');
+            $('.alert').html(``).hide();
+            $('.alert').removeClass('alert-danger');
+            $('.alert').removeClass('alert-success');
             $('#frm-especialidades input').val('');
             $('#frm-especialidades textarea').val('');
+        }
+
+        function alertarSucesso(msg) {
+            $('.alert').removeClass('alert-danger');
+            $('.alert').hide().html(msg).addClass('alert-success');
+            setTimeout(function() {
+                if (!$('.alert').hasClass('alert-danger')) {
+                    $('.alert').slideUp().html(``).removeClass('alert-success');
+                }
+            }, 5000);
+            $('.alert').slideDown();
+        }
+
+        function alertarErro(msg) {
+            $('.alert').removeClass('alert-success');
+            $('.alert').html(``).hide().addClass('alert-danger');
+            if (msg === null || msg === undefined) {
+                msg = 'Houve algum problema! Por favor, tentar novamente mais tarde!';
+            }
+            if (Array.isArray(msg)) {
+                msg.forEach(function(value) {
+                    $('.alert').append(`<p>${value}</p>`);
+                });
+            } else {
+                $('.alert').html(msg);
+            }
+            $('.alert').slideDown();
         }
     </script>
 

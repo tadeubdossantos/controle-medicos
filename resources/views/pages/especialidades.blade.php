@@ -164,9 +164,41 @@
                     }
                 });
         });
+
+        var timerSucesso = null;
+
+        function alertarSucesso(msg) {
+            $('.alert').removeClass('alert-danger');
+            $('.alert').hide().html(msg).addClass('alert-success');
+            if (timerSucesso) {
+                clearTimeout(timerSucesso);
+            }
+            timerSucesso = setTimeout(function() {
+                if (!$('.alert').hasClass('alert-danger')) {
+                    $('.alert').slideUp().html(``).removeClass('alert-success');
+                }
+            }, 5000);
+            $('.alert').slideDown();
+        }
+
+        function alertarErro(msg) {
+            $('.alert').removeClass('alert-success');
+            $('.alert').html(``).hide().addClass('alert-danger');
+            if (msg === null || msg === undefined) {
+                msg = 'Houve algum problema! Por favor, tentar novamente mais tarde!';
+            }
+            if (Array.isArray(msg)) {
+                msg.forEach(function(value) {
+                    $('.alert').append(`<p>${value}</p>`);
+                });
+            } else {
+                $('.alert').html(msg);
+            }
+            $('.alert').slideDown();
+        }
     </script>
 
-    {{-- Funções chamadas de forma inline só funcionam neste bloco que não possui o atributo 'type' --}}
+    {{-- Funções chamadas de forma inline só funcionam neste bloco que não possui o atributo 'type' em script --}}
     <script>
         function consultar(id) {
             resetForm();
@@ -221,33 +253,6 @@
             $('.alert').removeClass('alert-success');
             $('#frm-especialidades input').val('');
             $('#frm-especialidades textarea').val('');
-        }
-
-        function alertarSucesso(msg) {
-            $('.alert').removeClass('alert-danger');
-            $('.alert').hide().html(msg).addClass('alert-success');
-            setTimeout(function() {
-                if (!$('.alert').hasClass('alert-danger')) {
-                    $('.alert').slideUp().html(``).removeClass('alert-success');
-                }
-            }, 5000);
-            $('.alert').slideDown();
-        }
-
-        function alertarErro(msg) {
-            $('.alert').removeClass('alert-success');
-            $('.alert').html(``).hide().addClass('alert-danger');
-            if (msg === null || msg === undefined) {
-                msg = 'Houve algum problema! Por favor, tentar novamente mais tarde!';
-            }
-            if (Array.isArray(msg)) {
-                msg.forEach(function(value) {
-                    $('.alert').append(`<p>${value}</p>`);
-                });
-            } else {
-                $('.alert').html(msg);
-            }
-            $('.alert').slideDown();
         }
     </script>
 

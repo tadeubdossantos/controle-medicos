@@ -8,17 +8,17 @@
     </div>
     <div class="row">
         <div class="col-sm-6 mb-3 mb-sm-0">
-            <div class="card">
+            <div class="card bg-primary text-white">
                 <div class="card-body">
-                    <h5 class="card-title">Especialidades</h5>
+                    <h5 class="card-title">Especialidades Cadastradas</h5>
                     <p class="card-text">Total: {{ $qtdEspecialidades }}</p>
                 </div>
             </div>
         </div>
         <div class="col-sm-6">
-            <div class="card">
+            <div class="card bg-danger text-white">
                 <div class="card-body">
-                    <h5 class="card-title">Médicos</h5>
+                    <h5 class="card-title">Médicos Cadastrados</h5>
                     <p class="card-text">Total: {{ $qtdMedicos }}</p>
                 </div>
             </div>

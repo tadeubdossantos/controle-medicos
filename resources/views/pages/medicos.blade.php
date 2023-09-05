@@ -23,17 +23,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="card bg-danger">
-                        <div class="card-body text-light"></div>
-                    </div>
+                    <div class="alert" role="alert"></div>
                     <form action="" method="post" enctype="multipart/form-data" id="frm-medicos">
                         <input type="hidden" name="id" id="id">
                         <div class="mb-3">
-                            <label for="nome" class="form-label">Nome:</label>
+                            <label for="nome" class="form-label">Nome:</label><span class="required">*</span>
                             <input type="text" class="form-control" id="nome" name="nome" maxlength="30">
                         </div>
                         <div class="mb-3">
-                            <label for="crm" class="form-label">CRM:</label>
+                            <label for="crm" class="form-label">CRM:</label><span class="required">*</span>
                             <input type="text" class="form-control" id="crm" name="crm" maxlength="30">
                         </div>
                         <div class="mb-3">
@@ -50,37 +48,38 @@
                         <div class="mb-3">
                             @php
                                 $qtdEspecialistas = count($especialidades);
-                                if($qtdEspecialistas > 0) {
+                                if ($qtdEspecialistas > 0) {
                                     $rowsCol1 = $rowsCol2 = intval($qtdEspecialistas / 2);
-                                    $rowsCol1 += ($qtdEspecialistas % 2);
+                                    $rowsCol1 += $qtdEspecialistas % 2;
                                     $especialidadesCol1 = $especialidadesCol2 = [];
                                     foreach ($especialidades as $key => $especialidade) {
-                                        if(($key) < $rowsCol1) {
+                                        if ($key < $rowsCol1) {
                                             $especialidadesCol1[] = $especialidades[$key];
-                                        }
-                                        else {
+                                        } else {
                                             $especialidadesCol2[] = $especialidades[$key];
                                         }
                                     }
                                 }
                             @endphp
-                            @if($qtdEspecialistas > 0)
+                            @if ($qtdEspecialistas > 0)
                                 <div class="row">
                                     <div class="col">
                                         @foreach ($especialidadesCol1 as $especialidadeCol1)
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="{{ $especialidadeCol1->id }}" name="especialidades[]">
+                                                <input class="form-check-input" type="checkbox"
+                                                    value="{{ $especialidadeCol1->id }}" name="especialidades[]">
                                                 <label class="form-check-label">
                                                     {{ $especialidadeCol1->nome }}
                                                 </label>
                                             </div>
                                         @endforeach
                                     </div>
-                                    @if(count($especialidadesCol2) > 0)
+                                    @if (count($especialidadesCol2) > 0)
                                         <div class="col">
                                             @foreach ($especialidadesCol2 as $especialidadeCol2)
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="{{ $especialidadeCol2->id }}" name="especialidades[]">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        value="{{ $especialidadeCol2->id }}" name="especialidades[]">
                                                     <label class="form-check-label">
                                                         {{ $especialidadeCol2->nome }}
                                                     </label>
@@ -93,7 +92,7 @@
                         </div>
                         <div class="mb-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary" id="btnIncluir">Registar</button>
+                            <button type="submit" class="btn btn-primary" id="btnIncluir">Registrar</button>
                         </div>
                     </form>
                 </div>
@@ -195,6 +194,7 @@
             var rota = $('input[name=id]').val() === '' ?
                 "{{ url('medicos/cadastrar') }}" :
                 "{{ url('medicos/alterar') }}";
+            $('input.is-invalid').removeClass('is-invalid');
             $.ajax({
                     type: "POST",
                     url: rota,
@@ -203,28 +203,67 @@
                     contentType: false,
                     processData: false,
                     success: function(data) {
-                        if (data.errors) {
-                            $('.card').hide();
-                            $('.card-body').html('');
+                        if (data.result == -1) {
+                            let erros = '';
                             Object.keys(data.errors).forEach(key => {
-                                $('.card-body').append(`<p>${data.errors[key][0]}</p>`);
+                                $(`input[name=${key}]`).addClass('is-invalid');
+                                erros += `<p>${data.errors[key][0]}</p>`;
                             });
-                            return $('.card').show();
+                            return alertarErro(erros);
+                        } else if (data.result == -2) {
+                            return alertarErro();
                         }
-                        if (!$('#id').val()) alert('Cadastrado com Realizado com sucesso!');
-                        else alert('Atualização Realizada com sucesso!');
-                        resetForm();
-                        $('.btn-close').click();
+
+                        if (!$('#id').val()) {
+                            resetForm();
+                            alertarSucesso('Cadastro realizado com sucesso!');
+                        } else {
+                            alertarSucesso('Atualização realizada com sucesso!');
+                        }
                     },
                     error: function() {
-                        alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                        alertarErro();
                     }
                 })
                 .always(function(data) {
-                    var oTable = $("#table-medicos").dataTable();
-                    oTable.fnDraw(false);
+                    if (data.result == 1) {
+                        let oTable = $("#table-medicos").dataTable();
+                        oTable.fnDraw(false);
+                    }
                 });
         });
+
+        var timerSucesso = null;
+
+        function alertarSucesso(msg) {
+            $('.alert').removeClass('alert-danger');
+            $('.alert').hide().html(msg).addClass('alert-success');
+            if (timerSucesso) {
+                clearTimeout(timerSucesso);
+            }
+            timerSucesso = setTimeout(function() {
+                if (!$('.alert').hasClass('alert-danger')) {
+                    $('.alert').slideUp().html(``).removeClass('alert-success');
+                }
+            }, 5000);
+            $('.alert').slideDown();
+        }
+
+        function alertarErro(msg) {
+            $('.alert').removeClass('alert-success');
+            $('.alert').html(``).hide().addClass('alert-danger');
+            if (msg === null || msg === undefined) {
+                msg = 'Houve algum problema! Por favor, tentar novamente mais tarde!';
+            }
+            if (Array.isArray(msg)) {
+                msg.forEach(function(value) {
+                    $('.alert').append(`<p>${value}</p>`);
+                });
+            } else {
+                $('.alert').html(msg);
+            }
+            $('.alert').slideDown();
+        }
     </script>
 
     {{-- Funções chamadas de forma inline só funcionam neste bloco que não possui o atributo 'type' --}}
@@ -237,8 +276,8 @@
                 data: { id: id },
                 dataType: 'json',
                 success: function(data) {
-                    if(data.result < 0) {
-                        return alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                    if (data.result < 0) {
+                        return alertarErro();
                     }
                     let dados = data.data;
                     $('#modal-label-medico').html("Alterar Medico");
@@ -250,14 +289,15 @@
                     $('#descricao').val(dados.descricao);
                     dados.especialidades.forEach(function(value) {
                         let idEspecialidade = value.especialidade_id;
-                        $('input[type=checkbox]').each(function(index){
-                            if($(this).val() == idEspecialidade)
-                                $(`input[type=checkbox][value=${idEspecialidade}]`).prop('checked', true);
+                        $('input[type=checkbox]').each(function(index) {
+                            if ($(this).val() == idEspecialidade)
+                                $(`input[type=checkbox][value=${idEspecialidade}]`).prop(
+                                    'checked', true);
                         });
                     });
                 },
                 error: function() {
-                    alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
+                    alertErro();
                 }
             });
         }
@@ -270,7 +310,7 @@
                 data: { id: id },
                 dataType: 'json',
                 success: function(data) {
-                    if(data.result < 0) {
+                    if (data.result < 0) {
                         return alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                     }
                     alert('Exclusão realizada com sucesso!');
@@ -284,10 +324,12 @@
         }
 
         function resetForm() {
-            $('.card').hide();
-            $('.card-body ').html('');
+            $('input.is-invalid').removeClass('is-invalid');
+            $('.alert').html(``).hide();
+            $('.alert').removeClass('alert-danger');
+            $('.alert').removeClass('alert-success');
             $('#frm-medicos input[type=text]').val('');
-            $('#frm-medicos input[type=checkbox]').each(function(){
+            $('#frm-medicos input[type=checkbox]').each(function() {
                 $(this).prop('checked', false);
             });
         }

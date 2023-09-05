@@ -39,7 +39,7 @@
 
                         <div class="mb-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary" id="btnIncluir">Registar</button>
+                            <button type="submit" class="btn btn-primary" id="btnIncluir">Registrar</button>
                         </div>
                     </form>
                 </div>
@@ -239,8 +239,9 @@
                     oTable.fnDraw(false);
                 },
                 error: function(e) {
-                    if (e.responseJSON.message.indexOf('SQLSTATE[23000]') !== 1)
+                    if (e.responseJSON.message.indexOf('SQLSTATE[23000]') !== 1) {
                         return alert('Essa especialidade já está vinculado com um médico, portanto não vai ser permtido excluir!');
+                    }
                     alert('Houve algum problema! Por favor, tentar novamente mais tarde!');
                 }
             });

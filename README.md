@@ -11,6 +11,9 @@ A modelagem do banco de dados pode ser visualizada na ilustração abaixo: <br/>
 
 ## PASSO À PASSO PARA RODAR O PROJETO
 
+Ligue o serviço do MySQL no xampp: <br/><br/>
+![image](https://github.com/tadeubdossantos/controle-medicos/assets/86169857/fc752c74-ae72-473c-acca-852f8df5e53d)
+
 Clone o repositório:
 ```
 git clone https://github.com/tadeubdossantos/controle-medicos.git
@@ -38,15 +41,19 @@ Instale as dependências do projeto:
 ```
 composer install
 ```
+Execute o comando abaixo para obter a versão mais recente do pacote do DataTables do Laravel
+```
+composer require yajra/laravel-datatables-oracle:"^10.3.1"
+```
 Gere a key do projeto Laravel:
 ```
 php artisan key:generate
 ```
-Antes de acessar o projeto dê o seguinte comando no terminal:
+Para o projeto estar apto a ser executado:
 ```
 php artisan serve
 ```
-Em uma nova instância do terminal dê os comandos abaixo:
+Em uma nova instância do terminal dê os comandos:
 ```
 # para baixar as depêndencias do projeto
 npm install 
@@ -54,15 +61,17 @@ npm install
 # para a compilação do assets
 npm run build
 ```
-Ligue o serviço do MySQL no xampp: <br/><br/>
-![image](https://github.com/tadeubdossantos/controle-medicos/assets/86169857/fc752c74-ae72-473c-acca-852f8df5e53d)
+Em um nova instância do terminal dê o comando abaixo para criar o banco de dados:
+```
+php artisan migrate
+```
 <br/>
 Para acessar o projeto: http://localhost:8000/
+<br/>
+<br/>
+Caso deseje alimentar o banco de dados para teste, dê o seguinte comando:
 
-Caso deseje alimentar o banco de dados para teste, em uma nova instância do terminal dê o seguinte comando:
 ```
-php artisan bd:seed
+php artisan db:seed
 ```
-
-
-
+<br/>

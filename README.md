@@ -7,7 +7,7 @@ O sistema oferece funcionalidades para realizar as operações básicas de CRUD 
 Este projeto foi desenvolvido com a utilização do framework Laravel no lado do servidor, enquanto para a interface do usuário, utilizou-se o Blade. Quanto à persistência de dados, optou-se por empregar o banco de dados MySQL, através do ambiente de desenvolvimento Xampp.
 <br/><br/>
 A modelagem do banco de dados pode ser visualizada na ilustração abaixo: <br/><br/>
-![image](https://github.com/tadeubdossantos/controle-medicos/assets/86169857/9a052e11-e636-4f32-8876-e1b7869457dd)
+![image](https://github.com/tadeubdossantos/controle-medicos/assets/86169857/382a08e2-f127-4ea3-84c8-98d7f2c2e06b)
 
 ## PASSO À PASSO PARA RODAR O PROJETO
 
@@ -55,7 +55,7 @@ npm install
 npm run build
 ```
 Ligue o serviço do MySQL no xampp: <br/><br/>
-![image](https://github.com/tadeubdossantos/controle-medicos/assets/86169857/767703b5-cc5f-4728-a49e-8ea98f221ea0)
+![image](https://github.com/tadeubdossantos/controle-medicos/assets/86169857/fc752c74-ae72-473c-acca-852f8df5e53d)
 <br/>
 Para acessar o projeto: http://localhost:8000/
 
